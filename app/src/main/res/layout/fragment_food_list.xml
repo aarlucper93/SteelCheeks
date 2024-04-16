@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.steelcheeks.ui.FoodsViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/list_item" />
+
+       <!-- <TextView
+            android:id="@+id/product_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="Product Name"
+            android:text="@{viewModel.food.product.productName}"/>
+
+        <TextView
+            android:id="@+id/product_brand"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/product_name"
+            app:layout_constraintTop_toBottomOf="@id/product_name"
+            android:layout_marginTop="4dp"
+            tools:text="Product Brand"
+            android:text="@{viewModel.food.product.productBrands}"/>
+
+        <TextView
+            android:id="@+id/product_energy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/product_name"
+            app:layout_constraintTop_toBottomOf="@id/product_brand"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="10dp"
+            tools:text="Calories: 499"
+            android:text="@{@string/kcal_text(viewModel.kcal.toString())}"/>
+
+        <TextView
+            android:id="@+id/product_carbohydrates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/product_energy"
+            app:layout_constraintTop_toBottomOf="@id/product_energy"
+            android:text="@{@string/carbohydrates_text(viewModel.carbohydrates.toString())}"
+            tools:text="Carbs: 16g"/>
+
+        <TextView
+            android:id="@+id/product_proteins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/product_energy"
+            app:layout_constraintTop_toBottomOf="@id/product_carbohydrates"
+            android:text="@{@string/proteins_text(viewModel.proteins.toString())}"
+            tools:text="Proteins: 6g"/>-->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
