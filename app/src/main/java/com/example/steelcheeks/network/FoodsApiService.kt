@@ -14,7 +14,7 @@ import retrofit2.http.GET
 //TODO: Cambiar url por https://world.openfoodfacts.org/cgi/search.pl?search_terms=natillas hacendado&search_simple=1&action=process&json=1&fields=product_name,brands,nutriments
 //Siendo search_terms el criterio de busqueda
 const val BASE_URL = "https://world.openfoodfacts.org/cgi/"
-const val QUERY_PARAMETERS = "search.pl?search_terms=natillas hacendado&search_simple=1&action=process&json=1&fields=product_name,brands,nutriments,code"
+const val QUERY_PARAMETERS = "search.pl?search_terms=proteínas hacendado&search_simple=1&action=process&json=1&fields=product_name,brands,nutriments,code"
 
 
 //Build Moshi object that Retrofit will be using

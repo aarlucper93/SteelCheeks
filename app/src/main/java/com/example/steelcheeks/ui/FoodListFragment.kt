@@ -13,18 +13,34 @@ import com.example.steelcheeks.network.Food
 class FoodListFragment : Fragment() {
 
     private val viewModel: FoodsViewModel by activityViewModels()
+    private var _binding: FragmentFoodListBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentFoodListBinding.inflate(inflater)
+        _binding = FragmentFoodListBinding.inflate(inflater)
+        return binding.root
+    }
 
-        // Link the lifecycle of the LiveData bound to the layout with the Fragment's lifecycle
-        binding.lifecycleOwner = this
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val adapter = FoodListAdapter()
+
+        // The lifecycle of the LiveData bound to the layout is that of the Fragment's
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.recyclerView.adapter = adapter
         // Gives the binding access to the FoodsViewModel
         binding.viewModel = viewModel
+        viewModel.products.observe(viewLifecycleOwner) {entries ->
+            entries?.let {
+                adapter.submitList(it.products)
+            }
+        }
+        adapter.submitList(viewModel.products.value?.products)
 
-        return binding.root
+
     }
 }
