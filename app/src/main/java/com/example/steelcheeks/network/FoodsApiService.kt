@@ -9,12 +9,13 @@ import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 //TODO: Cambiar url por https://world.openfoodfacts.org/cgi/search.pl?search_terms=natillas hacendado&search_simple=1&action=process&json=1&fields=product_name,brands,nutriments
 //Siendo search_terms el criterio de busqueda
 const val BASE_URL = "https://world.openfoodfacts.org/cgi/"
-const val QUERY_PARAMETERS = "search.pl?search_terms=proteínas hacendado&search_simple=1&action=process&json=1&fields=product_name,brands,nutriments,code"
 
 
 //Build Moshi object that Retrofit will be using
@@ -47,8 +48,14 @@ val retrofit = Retrofit.Builder()
 
 //Returns a single Food entry TODO: change to a list of foods
 interface FoodsApiService {
-    @GET(QUERY_PARAMETERS)
-    suspend fun getFoodList() : retrofit2.Response<FoodList>
+    @GET("search.pl")
+    suspend fun getFoodList(
+        @Query("search_terms") searchTerms: String,
+        @Query("search_simple") searchSimple: Int = 1,
+        @Query("action") action: String = "process",
+        @Query("json") json: Int = 1,
+        @Query("fields") fields: String = "product_name,brands,nutriments,code"
+    ): retrofit2.Response<FoodList>
 }
 
 //Public Api object that exposes the lazy-initialized Retrofit service

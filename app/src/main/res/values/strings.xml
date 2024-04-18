@@ -8,4 +8,5 @@
     <string name="kcal_text">Energy: %s</string>
     <string name="carbohydrates_text">Carbs: %s</string>
     <string name="proteins_text">Proteins: %s</string>
+    <string name="search_field_hint">Search for an item</string>
 </resources>

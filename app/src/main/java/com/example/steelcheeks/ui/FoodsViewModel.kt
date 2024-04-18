@@ -32,11 +32,11 @@ class FoodsViewModel : ViewModel() {
     val proteins: LiveData<Double?> = food.map { it.product.nutriments.proteins }*/
 
     //Launches a coroutine that uses the Foods Api Retrofit Service to get a Food entry
-    private fun getFoodEntries() {
+    fun getFoodEntries(searchTerms: String) {
         viewModelScope.launch {
             _status.value = FoodsApiStatus.LOADING
             try {
-                val response = FoodsApi.retrofitService.getFoodList()
+                val response = FoodsApi.retrofitService.getFoodList(searchTerms = searchTerms)
                 if (response.isSuccessful) {
                     _products.value = response.body()
                     _products.value?.let {
@@ -51,9 +51,5 @@ class FoodsViewModel : ViewModel() {
                 _status.value = FoodsApiStatus.ERROR
             }
         }
-    }
-
-    init {
-        getFoodEntries()
     }
 }

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.activityViewModels
 import com.example.steelcheeks.R
 import com.example.steelcheeks.databinding.FragmentFoodListBinding
@@ -39,8 +40,18 @@ class FoodListFragment : Fragment() {
                 adapter.submitList(it.products)
             }
         }
-        adapter.submitList(viewModel.products.value?.products)
 
 
+        val searchEditText = binding.searchField.editText
+        searchEditText?.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_GO) {     //Enter Button is pressed
+                val searchText = searchEditText.text.toString()
+                viewModel.getFoodEntries(searchText)
+                return@setOnEditorActionListener true
+            }
+            false
+        }
+
+        //adapter.submitList(viewModel.products.value?.products)
     }
 }
