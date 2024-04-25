@@ -7,9 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.activityViewModels
-import com.example.steelcheeks.R
+import androidx.navigation.fragment.findNavController
 import com.example.steelcheeks.databinding.FragmentFoodListBinding
-import com.example.steelcheeks.network.Food
 
 class FoodListFragment : Fragment() {
 
@@ -20,7 +19,7 @@ class FoodListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFoodListBinding.inflate(inflater)
         return binding.root
     }
@@ -28,7 +27,10 @@ class FoodListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = FoodListAdapter()
+        val adapter = FoodListAdapter{
+            val action = FoodListFragmentDirections.actionFoodListFragmentToFoodDetailFragment(it.code)
+            findNavController().navigate(action)
+        }
 
         // The lifecycle of the LiveData bound to the layout is that of the Fragment's
         binding.lifecycleOwner = viewLifecycleOwner
