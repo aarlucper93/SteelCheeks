@@ -1,6 +1,5 @@
 package com.example.steelcheeks.ui
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -51,5 +50,9 @@ class FoodsViewModel : ViewModel() {
                 _status.value = FoodsApiStatus.ERROR
             }
         }
+    }
+
+    fun setFoodItemByBarcode(barcode: String) {
+        _food.value = _products.value?.products?.filter { it.code == barcode }?.get(0)
     }
 }

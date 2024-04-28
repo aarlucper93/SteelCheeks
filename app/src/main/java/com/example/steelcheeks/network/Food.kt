@@ -18,9 +18,9 @@ data class Nutriments(
     @Json(name = "energy-kcal") val energyKcal: Double?,
     @Json(name = "carbohydrates") val carbohydrates: Double?,
     @Json(name = "proteins") val proteins: Double?,
-
+    @Json(name = "fat") val fat: Double?
     /* Add later
-      @Json(name = "fat") val fat: Double,
+
       @Json(name = "saturated-fat") val saturatedFat: Double,
       @Json(name = "salt") val salt: Double */
 )

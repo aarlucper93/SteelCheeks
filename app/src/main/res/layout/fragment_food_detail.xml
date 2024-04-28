@@ -100,12 +100,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvBrand" />
 
+            <!-- TODO P1: Add property to the food model so it can be added dynamically -->
             <TextView
                 android:id="@+id/tvServingSizeValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tvServingSize"
+                android:text="25g"
                 tools:text="25g" />
 
             <TextView

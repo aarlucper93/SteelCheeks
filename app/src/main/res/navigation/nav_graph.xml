@@ -5,17 +5,17 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/foodListFragment">
     <fragment
-        android:id="@+id/foodDetailFragment"
-        android:name="com.example.steelcheeks.ui.FoodDetailFragment"
-        android:label="FoodDetailFragment" >
-        <argument android:name="barcode" />
-    </fragment>
-    <fragment
         android:id="@+id/foodListFragment"
         android:name="com.example.steelcheeks.ui.FoodListFragment"
-        android:label="FoodListFragment" >
+        android:label="Foods">
         <action
             android:id="@+id/action_foodListFragment_to_foodDetailFragment"
             app:destination="@id/foodDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/foodDetailFragment"
+        android:name="com.example.steelcheeks.ui.FoodDetailFragment"
+        android:label="Food Details">
+        <argument android:name="barcode" />
     </fragment>
 </navigation>

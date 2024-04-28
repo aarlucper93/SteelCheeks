@@ -9,11 +9,8 @@ import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
-
-//TODO: Cambiar url por https://world.openfoodfacts.org/cgi/search.pl?search_terms=natillas hacendado&search_simple=1&action=process&json=1&fields=product_name,brands,nutriments
 //Siendo search_terms el criterio de busqueda
 const val BASE_URL = "https://world.openfoodfacts.org/cgi/"
 
