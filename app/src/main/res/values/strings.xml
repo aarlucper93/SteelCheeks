@@ -9,4 +9,14 @@
     <string name="carbohydrates_text">Carbs: %s</string>
     <string name="proteins_text">Proteins: %s</string>
     <string name="search_field_hint">Search for an item</string>
+    <string name="detail_view_details_header">Details</string>
+    <string name="detail_view_barcode_field">Barcode</string>
+    <string name="detail_view_name_field">Name</string>
+    <string name="detail_view_brand_field">Brand</string>
+    <string name="detail_view_serving_size_field">Serving size</string>
+    <string name="detail_view_nutritional_values_header">Nutritional values</string>
+    <string name="detail_view_calories_field">Calories (kcal)</string>
+    <string name="detail_view_protein_field">Protein (g)</string>
+    <string name="detail_view_carbohydrates_field">Carbohydrates (g)</string>
+    <string name="detail_view_fat_field">Fat (g)</string>
 </resources>

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.steelcheeks.databinding.ListItemBinding
 import com.example.steelcheeks.network.Food
 
-class FoodListAdapter() : ListAdapter<Food, FoodListAdapter.ViewHolder>(Diffcallback) {
+class FoodListAdapter(private val onItemClicked: (Food) -> Unit) : ListAdapter<Food, FoodListAdapter.ViewHolder>(Diffcallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             ListItemBinding.inflate(
@@ -21,6 +21,9 @@ class FoodListAdapter() : ListAdapter<Food, FoodListAdapter.ViewHolder>(Diffcall
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
+        holder.itemView.setOnClickListener {
+            onItemClicked(item)
+        }
         holder.bind(item)
     }
 
