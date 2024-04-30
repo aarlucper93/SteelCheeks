@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.steelcheeks.databinding.FragmentFoodListBinding
 
 class FoodListFragment : Fragment() {
@@ -34,6 +36,8 @@ class FoodListFragment : Fragment() {
 
         // The lifecycle of the LiveData bound to the layout is that of the Fragment's
         binding.lifecycleOwner = viewLifecycleOwner
+
+        binding.recyclerView.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
         binding.recyclerView.adapter = adapter
         // Gives the binding access to the FoodsViewModel
         binding.viewModel = viewModel

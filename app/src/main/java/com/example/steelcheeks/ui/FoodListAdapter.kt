@@ -33,9 +33,9 @@ class FoodListAdapter(private val onItemClicked: (Food) -> Unit) : ListAdapter<F
                 productName.text = food.productName
                 productBrand.text = food.productBrands
                 //TODO: Extract hardcoded strings to string resources (passing context from fragment as adapter's parameter?)
-                productEnergy.text = "Calories: ${food.nutriments.energyKcal}"
-                productCarbohydrates.text = "Carbs: ${food.nutriments.carbohydrates}g"
-                productProteins.text = "Proteins: ${food.nutriments.proteins}g"
+                productAmount.text = "100g : "     //TODO P1: Quitar el hardcodeo y ponerle las dos propiedades que vas a tomar en el modelo
+                productEnergy.text = food.nutriments.energyKcal.toString()
+
 
             }
         }
