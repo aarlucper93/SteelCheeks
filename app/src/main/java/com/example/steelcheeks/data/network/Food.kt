@@ -1,4 +1,4 @@
-package com.example.steelcheeks.network
+package com.example.steelcheeks.data.network
 
 import com.squareup.moshi.Json
 

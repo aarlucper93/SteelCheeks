@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
+import com.example.steelcheeks.SteelCheeksApplication
 import com.example.steelcheeks.databinding.FragmentFoodDetailBinding
+import com.google.android.material.snackbar.Snackbar
 
 
 class FoodDetailFragment : Fragment() {
@@ -15,7 +17,11 @@ class FoodDetailFragment : Fragment() {
     private var _binding: FragmentFoodDetailBinding? = null
     private val binding get() = _binding!!
     private val args: FoodDetailFragmentArgs by navArgs()
-    private val viewModel: FoodsViewModel by activityViewModels()
+    private val viewModel: FoodsViewModel by activityViewModels {
+        FoodsViewModelFactory (
+            (activity?.application as SteelCheeksApplication).database
+        )
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +49,17 @@ class FoodDetailFragment : Fragment() {
             tvCarbsValue.text = viewModel.food.value?.nutriments?.carbohydrates.toString()
             tvFatValue.text = viewModel.food.value?.nutriments?.fat.toString()
 
+        }
+
+        binding.fabSaveToDatabase.setOnClickListener {
+            viewModel.insertFoodToLocalDatabase(viewModel.food)
+            if (viewModel.result.value != 1L){
+                Snackbar.make(
+                    this.requireView(),
+                    "Food saved to the local database",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 }

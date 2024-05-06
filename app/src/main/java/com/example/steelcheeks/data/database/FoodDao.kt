@@ -1,4 +1,4 @@
-package com.example.steelcheeks.database
+package com.example.steelcheeks.data.database
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FoodDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(foodEntities: List<FoodEntity>)
+    suspend fun insert(foodEntity: FoodEntity) : Long
 
     @Update
     suspend fun update(foodEntity: FoodEntity)

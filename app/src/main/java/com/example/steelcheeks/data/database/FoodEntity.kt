@@ -1,4 +1,4 @@
-package com.example.steelcheeks.database
+package com.example.steelcheeks.data.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

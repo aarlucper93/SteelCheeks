@@ -10,11 +10,16 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.steelcheeks.SteelCheeksApplication
 import com.example.steelcheeks.databinding.FragmentFoodListBinding
 
 class FoodListFragment : Fragment() {
 
-    private val viewModel: FoodsViewModel by activityViewModels()
+    private val viewModel: FoodsViewModel by activityViewModels {
+        FoodsViewModelFactory (
+            (activity?.application as SteelCheeksApplication).database
+        )
+    }
     private var _binding: FragmentFoodListBinding? = null
     private val binding get() = _binding!!
 

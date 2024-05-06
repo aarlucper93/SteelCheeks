@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.steelcheeks.databinding.ListItemBinding
-import com.example.steelcheeks.network.Food
+import com.example.steelcheeks.data.network.Food
 
 class FoodListAdapter(private val onItemClicked: (Food) -> Unit) : ListAdapter<Food, FoodListAdapter.ViewHolder>(Diffcallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
