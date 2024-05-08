@@ -51,7 +51,7 @@ interface FoodsApiService {
         @Query("search_simple") searchSimple: Int = 1,
         @Query("action") action: String = "process",
         @Query("json") json: Int = 1,
-        @Query("fields") fields: String = "product_name,brands,nutriments,code"
+        @Query("fields") fields: String = "product_name,brands,nutriments,code,image_url"
     ): retrofit2.Response<FoodList>
 }
 

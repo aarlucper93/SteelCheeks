@@ -18,6 +18,7 @@ class FoodRepository(private val database: FoodRoomDatabase) {
             food.code,
             food.productName,
             food.productBrands,
+            food.imageUrl,
             food.nutriments.energyKcal,
             food.nutriments.carbohydrates,
             food.nutriments.proteins,

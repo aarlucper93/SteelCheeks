@@ -51,13 +51,15 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:2.6.1"
     kapt "androidx.room:room-compiler:2.6.1"
 
-
     //Navigation
     implementation 'androidx.navigation:navigation-fragment-ktx:2.7.7'
     implementation 'androidx.navigation:navigation-ui-ktx:2.7.7'
 
     // Moshi
     implementation 'com.squareup.moshi:moshi-kotlin:1.9.3'
+
+    // Glide
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
 
     // Retrofit with Moshi Converter
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'

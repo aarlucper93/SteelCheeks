@@ -11,6 +11,7 @@ data class Food (
     val code: String,
     @Json(name = "product_name") val productName: String,
     @Json(name = "brands") val productBrands: String,
+    @Json(name = "image_url") val imageUrl: String?,
     val nutriments: Nutriments
 )
 

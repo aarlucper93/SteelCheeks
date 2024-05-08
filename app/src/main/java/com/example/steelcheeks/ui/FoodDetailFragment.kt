@@ -1,12 +1,14 @@
 package com.example.steelcheeks.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.example.steelcheeks.SteelCheeksApplication
 import com.example.steelcheeks.databinding.FragmentFoodDetailBinding
 import com.google.android.material.snackbar.Snackbar
@@ -49,7 +51,12 @@ class FoodDetailFragment : Fragment() {
             tvCarbsValue.text = viewModel.food.value?.nutriments?.carbohydrates.toString()
             tvFatValue.text = viewModel.food.value?.nutriments?.fat.toString()
 
+            Glide.with(requireContext())
+                .load(viewModel.food.value?.imageUrl)
+                .into(foodDetailImage)
         }
+
+        Log.d("FoodDetailFragment", "imageUrl: ${viewModel.food.value?.imageUrl}")
 
         binding.fabSaveToDatabase.setOnClickListener {
             viewModel.insertFoodToLocalDatabase(viewModel.food)
