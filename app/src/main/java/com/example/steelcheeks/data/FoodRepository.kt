@@ -7,12 +7,13 @@ import com.example.steelcheeks.data.network.Food
 import com.example.steelcheeks.data.network.FoodList
 import com.example.steelcheeks.data.network.FoodsApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 class FoodRepository(private val database: FoodRoomDatabase) {
 
-    var result = -1L
+    private var result = -1L
     suspend fun insertFood(food: Food): Long {
         val foodEntity = FoodEntity(
             food.code,
@@ -40,4 +41,7 @@ class FoodRepository(private val database: FoodRoomDatabase) {
         }
         return response
     }
+
+    fun getLocalFoodList(): Flow<List<FoodEntity>> = database.foodDao().getAllFoods()
+
 }

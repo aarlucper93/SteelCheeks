@@ -5,16 +5,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.steelcheeks.data.FoodRepository
+import com.example.steelcheeks.data.database.FoodEntity
 import com.example.steelcheeks.data.database.FoodRoomDatabase
 import com.example.steelcheeks.data.network.Food
 import com.example.steelcheeks.data.network.FoodList
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 enum class FoodsApiStatus { LOADING, ERROR, DONE }
 
 class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
+
+    val localFoodList: LiveData<List<FoodEntity>> =
+        repository.getLocalFoodList().asLiveData()
 
     //Status of the most recent request
     private val _status = MutableLiveData<FoodsApiStatus>()
@@ -75,6 +82,7 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
     }
 }
 
+//Allows passing the database as a parameter when initializing the viewModel.
 class FoodsViewModelFactory(private val database: FoodRoomDatabase) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

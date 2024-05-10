@@ -60,12 +60,13 @@ class FoodDetailFragment : Fragment() {
 
         binding.fabSaveToDatabase.setOnClickListener {
             viewModel.insertFoodToLocalDatabase(viewModel.food)
-            if (viewModel.result.value != 1L){
+            if (viewModel.result.value != -1L){
                 Snackbar.make(
                     this.requireView(),
                     "Food saved to the local database",
                     Snackbar.LENGTH_SHORT
                 ).show()
+
             }
         }
     }

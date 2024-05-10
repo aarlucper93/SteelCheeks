@@ -22,7 +22,7 @@ interface FoodDao {
     @Query("SELECT * FROM food WHERE code = :code")
     fun getFood(code: String): Flow<FoodEntity>
 
-    @Query("SELECT * FROM food ORDER BY code")
+    @Query("SELECT * FROM food ORDER BY product_name")
     fun getAllFoods(): Flow<List<FoodEntity>>
 
     @Query("SELECT COUNT(*) FROM food")

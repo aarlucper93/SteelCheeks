@@ -1,6 +1,7 @@
 package com.example.steelcheeks.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -35,8 +36,17 @@ class FoodListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = FoodListAdapter{
-            val action = FoodListFragmentDirections.actionFoodListFragmentToFoodDetailFragment(it.code)
-            findNavController().navigate(action)
+            when (it) {
+                is FoodItem.ResponseFoodItem -> {
+                    val action = FoodListFragmentDirections.actionFoodListFragmentToFoodDetailFragment(it.food.code)
+                    findNavController().navigate(action)
+                }
+                is FoodItem.LocalFoodItem -> {
+                    val action = FoodListFragmentDirections.actionFoodListFragmentToFoodDetailFragment(it.food.code)
+                    findNavController().navigate(action)
+                }
+            }
+
         }
 
         // The lifecycle of the LiveData bound to the layout is that of the Fragment's
@@ -46,12 +56,22 @@ class FoodListFragment : Fragment() {
         binding.recyclerView.adapter = adapter
         // Gives the binding access to the FoodsViewModel
         binding.viewModel = viewModel
-        viewModel.products.observe(viewLifecycleOwner) {entries ->
-            entries?.let {
-                adapter.submitList(it.products)
+        viewModel.products.observe(viewLifecycleOwner) {foodList ->
+            foodList?.let {
+                val foodItems = it.products.map { food -> FoodItem.ResponseFoodItem(food) }
+                adapter.submitList(foodItems)
             }
         }
 
+        viewModel.localFoodList.observe(viewLifecycleOwner) {localFoodList ->
+            localFoodList?.let {
+                val foodItems = it.map { food -> FoodItem.LocalFoodItem(food) }
+                adapter.submitList(foodItems)
+            }
+            localFoodList.forEach {
+                Log.d("FoodListFragment", it.toString())
+            }
+        }
 
         val searchEditText = binding.searchField.editText
         searchEditText?.setOnEditorActionListener { _, actionId, _ ->
