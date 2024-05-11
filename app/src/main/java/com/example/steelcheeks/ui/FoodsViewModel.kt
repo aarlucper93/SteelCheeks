@@ -12,6 +12,7 @@ import com.example.steelcheeks.data.database.FoodEntity
 import com.example.steelcheeks.data.database.FoodRoomDatabase
 import com.example.steelcheeks.data.network.Food
 import com.example.steelcheeks.data.network.FoodList
+import com.example.steelcheeks.data.network.Nutriments
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -37,6 +38,8 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
 
     private val _result = MutableLiveData<Long>(-1L)
     val result: LiveData<Long> = _result
+
+    var isLocalLoad: Boolean = false
 
     //Nutriments of the food returned by the request
     /*val kcal: LiveData<Double?> = food.map { it.product.nutriments.energyKcal }
@@ -72,7 +75,28 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
     }
 
     fun setFoodItemByBarcode(barcode: String) {
-        _food.value = _products.value?.products?.filter { it.code == barcode }?.get(0)
+        if (isLocalLoad) {
+            //Map selected local food item to Food Livedata
+            val foodEntity = localFoodList.value?.filter { it.code == barcode }?.get(0)
+            foodEntity?.let {
+                _food.value = Food (
+                    code = foodEntity.code,
+                    productName = foodEntity.productName,
+                    productBrands = foodEntity.productBrands,
+                    imageUrl = foodEntity.imageUrl,
+                    productQuantityUnit = foodEntity.productQuantityUnit,
+                    nutriments = Nutriments(
+                        energyKcal = foodEntity.energyKcal,
+                        carbohydrates = foodEntity.carbohydrates,
+                        proteins = foodEntity.proteins,
+                        fat = foodEntity.fat
+                    )
+                )
+            }
+        }
+        else {
+            _food.value = _products.value?.products?.filter { it.code == barcode }?.get(0)
+        }
     }
 
     fun insertFoodToLocalDatabase(food: LiveData<Food>) {

@@ -41,8 +41,8 @@ class FoodListAdapter(private val onItemClicked: (FoodItem) -> Unit) : ListAdapt
                         productName.text = foodItem.food.productName
                         productBrand.text = foodItem.food.productBrands
                         //TODO: Extract hardcoded strings to string resources (passing context from fragment as adapter's parameter?)
-                        productAmount.text = "100g : "     //TODO P1: Quitar el hardcodeo y ponerle las dos propiedades que vas a tomar en el modelo
-                        productEnergy.text = foodItem.food.nutriments.energyKcal.toString()
+                        productAmount.text = "${foodItem.food.productQuantity}${foodItem.food.productQuantityUnit} : "     //TODO P1: Quitar el hardcodeo
+                        productEnergy.text = "${foodItem.food.nutriments.energyKcal.toString()} kcal"
                     }
                 }
                 is FoodItem.LocalFoodItem -> {
@@ -50,8 +50,9 @@ class FoodListAdapter(private val onItemClicked: (FoodItem) -> Unit) : ListAdapt
                         productName.text = foodItem.food.productName
                         productBrand.text = foodItem.food.productBrands
                         //TODO: Extract hardcoded strings to string resources (passing context from fragment as adapter's parameter?)
-                        productAmount.text = "100g : "     //TODO P1: Quitar el hardcodeo y ponerle las dos propiedades que vas a tomar en el modelo
-                        productEnergy.text = foodItem.food.energyKcal.toString()
+                        productAmount.text = "${foodItem.food.productQuantity}${foodItem.food.productQuantityUnit} : "     //TODO P1: Quitar el hardcodeo
+                        productEnergy.text = "${foodItem.food.energyKcal.toString()} kcal"
+
                     }
                 }
 

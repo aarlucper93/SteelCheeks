@@ -38,10 +38,12 @@ class FoodListFragment : Fragment() {
         val adapter = FoodListAdapter{
             when (it) {
                 is FoodItem.ResponseFoodItem -> {
+                    viewModel.isLocalLoad = false
                     val action = FoodListFragmentDirections.actionFoodListFragmentToFoodDetailFragment(it.food.code)
                     findNavController().navigate(action)
                 }
                 is FoodItem.LocalFoodItem -> {
+                    viewModel.isLocalLoad = true
                     val action = FoodListFragmentDirections.actionFoodListFragmentToFoodDetailFragment(it.food.code)
                     findNavController().navigate(action)
                 }

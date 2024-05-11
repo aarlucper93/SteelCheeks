@@ -46,6 +46,8 @@ class FoodDetailFragment : Fragment() {
             tvBarcodeValue.text = viewModel.food.value?.code
             tvNameValue.text = viewModel.food.value?.productName
             tvBrandValue.text = viewModel.food.value?.productBrands
+            tvServingSizeValue.text = viewModel.food.value?.productQuantity.toString()
+            tvServingUnitValue.text = viewModel.food.value?.productQuantityUnit
             tvCaloriesValue.text = viewModel.food.value?.nutriments?.energyKcal.toString()
             tvProteinValue.text = viewModel.food.value?.nutriments?.proteins.toString()
             tvCarbsValue.text = viewModel.food.value?.nutriments?.carbohydrates.toString()
