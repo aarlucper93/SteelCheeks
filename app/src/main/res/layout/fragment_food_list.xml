@@ -7,6 +7,9 @@
         <variable
             name="viewModel"
             type="com.example.steelcheeks.ui.FoodsViewModel" />
+
+        <import type="android.view.View" />
+        <import type="com.example.steelcheeks.ui.LoadingStatus" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,7 +33,50 @@
                 />
 
         </com.google.android.material.textfield.TextInputLayout>
-        
+
+        <ProgressBar
+            android:id="@+id/list_loading_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="@{viewModel.status == LoadingStatus.LOADING ? View.VISIBLE : View.GONE}"/>
+
+        <TextView
+            android:id="@+id/tvNoProductsFound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@string/tv_no_matches"
+            android:visibility="@{viewModel.noMatches == true ? View.VISIBLE : View.GONE}"/>
+
+        <ImageView
+            android:id="@+id/no_entries_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/ic_connection_error"
+            android:visibility="@{viewModel.status == LoadingStatus.ERROR ? View.VISIBLE : View.GONE}"/>
+
+        <TextView
+            android:id="@+id/tvLoadingError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/no_entries_icon"
+            android:text="@string/tv_loading_error"
+            android:visibility="@{viewModel.status == LoadingStatus.ERROR ? View.VISIBLE : View.GONE}"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="0dp"
@@ -41,8 +87,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_field"
             android:layout_marginTop="10dp"
-            tools:listitem="@layout/list_item" />
-
+            tools:listitem="@layout/list_item"
+            android:visibility="@{viewModel.status == LoadingStatus.ERROR ? View.INVISIBLE : View.VISIBLE}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

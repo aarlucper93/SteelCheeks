@@ -21,4 +21,6 @@
     <string name="detail_view_fat_field">Fat (g)</string>
     <string name="save_food_to_local_database">Save food to local database</string>
     <string name="tv_food_detail_serving_unit">Serving Unit</string>
+    <string name="tv_loading_error">An error occurred. Unable to load the data</string>
+    <string name="tv_no_matches">No matches</string>
 </resources>

@@ -1,7 +1,6 @@
 package com.example.steelcheeks.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.example.steelcheeks.R
 import com.example.steelcheeks.SteelCheeksApplication
 import com.example.steelcheeks.databinding.FragmentFoodDetailBinding
 import com.google.android.material.snackbar.Snackbar
@@ -23,11 +23,6 @@ class FoodDetailFragment : Fragment() {
         FoodsViewModelFactory (
             (activity?.application as SteelCheeksApplication).database
         )
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -56,19 +51,25 @@ class FoodDetailFragment : Fragment() {
             Glide.with(requireContext())
                 .load(viewModel.food.value?.imageUrl)
                 .into(foodDetailImage)
-        }
 
-        Log.d("FoodDetailFragment", "imageUrl: ${viewModel.food.value?.imageUrl}")
+            if (viewModel.isLocalLoad) {
+                binding.fabSaveToDatabase.setImageResource(R.drawable.ic_add_24)
+            }
+        }
 
         binding.fabSaveToDatabase.setOnClickListener {
             viewModel.insertFoodToLocalDatabase(viewModel.food)
-            if (viewModel.result.value != -1L){
-                Snackbar.make(
-                    this.requireView(),
-                    "Food saved to the local database",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-
+            if (viewModel.isLocalLoad) {
+                //TODO: Implement saving food to diary table
+            } else {
+                viewModel.insertFoodToLocalDatabase(viewModel.food)
+                if (viewModel.result.value != -1L){
+                    Snackbar.make(
+                        this.requireView(),
+                        "Food saved to the local database",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
