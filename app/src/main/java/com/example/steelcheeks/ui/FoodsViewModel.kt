@@ -13,6 +13,7 @@ import com.example.steelcheeks.data.database.FoodRoomDatabase
 import com.example.steelcheeks.data.network.Food
 import com.example.steelcheeks.data.network.FoodList
 import com.example.steelcheeks.data.network.Nutriments
+import com.example.steelcheeks.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 
 enum class FoodsApiStatus { LOADING, ERROR, DONE }
@@ -39,6 +40,9 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
 
     private val _result = MutableLiveData<Long>(-1L)
     val result: LiveData<Long> = _result
+
+    private val _snackbarMessage = SingleLiveEvent<String>()
+    val snackbarMessage: LiveData<String> = _snackbarMessage
 
     var isLocalLoad: Boolean = false
 
@@ -114,6 +118,9 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
     fun insertFoodToLocalDatabase(food: LiveData<Food>) {
         viewModelScope.launch {
             _result.value = repository.insertFood(food.value!!)
+            if (result.value != -1L) {
+                _snackbarMessage.value = "Food saved to the local database"
+            }
         }
     }
 }

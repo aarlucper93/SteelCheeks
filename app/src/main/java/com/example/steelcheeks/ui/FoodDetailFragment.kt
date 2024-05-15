@@ -60,14 +60,12 @@ class FoodDetailFragment : Fragment() {
 
         Log.d("FoodDetailFragment", "imageUrl: ${viewModel.food.value?.imageUrl}")
 
-        viewModel.result.observe(viewLifecycleOwner) { result ->
-            if (result != -1L) {
-                Snackbar.make(
-                    requireView(),
-                    "Food saved to the local database",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-            }
+        viewModel.snackbarMessage.observe(viewLifecycleOwner) { message ->
+            Snackbar.make(
+                requireView(),
+                message,
+                Snackbar.LENGTH_SHORT
+            ).show()
         }
 
         binding.fabSaveToDatabase.setOnClickListener {
