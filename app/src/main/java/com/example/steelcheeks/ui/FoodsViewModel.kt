@@ -13,8 +13,6 @@ import com.example.steelcheeks.data.database.FoodRoomDatabase
 import com.example.steelcheeks.data.network.Food
 import com.example.steelcheeks.data.network.FoodList
 import com.example.steelcheeks.data.network.Nutriments
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 enum class FoodsApiStatus { LOADING, ERROR, DONE }
@@ -23,6 +21,9 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
 
     val localFoodList: LiveData<List<FoodEntity>> =
         repository.getLocalFoodList().asLiveData()
+
+    private val _filteredLocalFoodList = MutableLiveData<List<FoodEntity>>()
+    val filteredLocalFoodList: LiveData<List<FoodEntity>> = _filteredLocalFoodList
 
     //Status of the most recent request
     private val _status = MutableLiveData<FoodsApiStatus>()
@@ -104,6 +105,14 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
             _result.value = repository.insertFood(food.value!!)
         }
     }
+
+    fun filterLocalFoodList(query: String) {
+        val filteredList = localFoodList.value?.filter {
+            it.productName.contains(query, true) || it.productBrands!!.contains(query, true)
+        } ?: emptyList()
+        _filteredLocalFoodList.value = filteredList
+    }
+
 }
 
 //Allows passing the database as a parameter when initializing the viewModel.
