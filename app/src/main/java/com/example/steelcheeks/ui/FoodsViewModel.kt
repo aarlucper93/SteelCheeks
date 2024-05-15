@@ -75,6 +75,17 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
         }
     }
 
+    fun filterLocalFoodList(query: String) {
+        if (query.isBlank()) {
+            _filteredLocalFoodList.value = localFoodList.value
+        } else {
+            val filteredList = localFoodList.value?.filter {
+                it.productName.contains(query, true) || it.productBrands!!.contains(query, true)        //TODO: Control for nullable productBrands
+            } ?: emptyList()
+            _filteredLocalFoodList.value = filteredList
+        }
+    }
+
     fun setFoodItemByBarcode(barcode: String) {
         if (isLocalLoad) {
             //Map selected local food item to Food Livedata
@@ -105,14 +116,6 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
             _result.value = repository.insertFood(food.value!!)
         }
     }
-
-    fun filterLocalFoodList(query: String) {
-        val filteredList = localFoodList.value?.filter {
-            it.productName.contains(query, true) || it.productBrands!!.contains(query, true)
-        } ?: emptyList()
-        _filteredLocalFoodList.value = filteredList
-    }
-
 }
 
 //Allows passing the database as a parameter when initializing the viewModel.
