@@ -1,4 +1,4 @@
-package com.example.steelcheeks.network
+package com.example.steelcheeks.data.network
 
 import com.squareup.moshi.Json
 
@@ -10,7 +10,10 @@ data class FoodList (
 data class Food (
     val code: String,
     @Json(name = "product_name") val productName: String,
-    @Json(name = "brands") val productBrands: String,
+    @Json(name = "brands") val productBrands: String?,
+    @Json(name = "image_url") val imageUrl: String?,
+    @Json(name = "product_quantity") val productQuantity : Long = 100,
+    @Json(name = "product_quantity_unit") val productQuantityUnit : String = "g",
     val nutriments: Nutriments
 )
 

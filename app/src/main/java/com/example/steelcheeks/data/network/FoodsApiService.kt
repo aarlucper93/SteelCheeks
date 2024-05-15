@@ -1,4 +1,4 @@
-package com.example.steelcheeks.network
+package com.example.steelcheeks.data.network
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -33,7 +33,10 @@ class UserAgentInterceptor(private val userAgent: String) : Interceptor {
 
 // Create an OkHttpClient and add the UserAgentInterceptor
 val okHttpClient = OkHttpClient.Builder()
-    .addInterceptor(UserAgentInterceptor("ButtcheeksReloaded/0.1.0 (aaronlp.ai93@gmail.com)"))
+    .addInterceptor(UserAgentInterceptor("Steelcheeks/0.1.0 (aaronlp.ai93@gmail.com)"))
+    .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS) // Connection timeout
+    .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)    // Read timeout
+    .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
     .build()
 
 //Build Retrofit object using Moshi converter
@@ -51,7 +54,7 @@ interface FoodsApiService {
         @Query("search_simple") searchSimple: Int = 1,
         @Query("action") action: String = "process",
         @Query("json") json: Int = 1,
-        @Query("fields") fields: String = "product_name,brands,nutriments,code"
+        @Query("fields") fields: String = "product_name,brands,nutriments,code,image_url,serving_quantity,product_quantity_unit"
     ): retrofit2.Response<FoodList>
 }
 

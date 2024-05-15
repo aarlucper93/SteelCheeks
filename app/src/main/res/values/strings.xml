@@ -19,4 +19,6 @@
     <string name="detail_view_protein_field">Protein (g)</string>
     <string name="detail_view_carbohydrates_field">Carbohydrates (g)</string>
     <string name="detail_view_fat_field">Fat (g)</string>
+    <string name="save_food_to_local_database">Save food to local database</string>
+    <string name="tv_food_detail_serving_unit">Serving Unit</string>
 </resources>

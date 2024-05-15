@@ -18,4 +18,9 @@
         android:label="Food Details">
         <argument android:name="barcode" />
     </fragment>
+    <fragment
+        android:id="@+id/diaryFragment"
+        android:name="com.example.steelcheeks.ui.DiaryFragment"
+        android:label="Diary"
+        tools:layout="@layout/fragment_diary" />
 </navigation>
