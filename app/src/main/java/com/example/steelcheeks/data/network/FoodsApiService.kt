@@ -33,7 +33,10 @@ class UserAgentInterceptor(private val userAgent: String) : Interceptor {
 
 // Create an OkHttpClient and add the UserAgentInterceptor
 val okHttpClient = OkHttpClient.Builder()
-    .addInterceptor(UserAgentInterceptor("ButtcheeksReloaded/0.1.0 (aaronlp.ai93@gmail.com)"))
+    .addInterceptor(UserAgentInterceptor("Steelcheeks/0.1.0 (aaronlp.ai93@gmail.com)"))
+    .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS) // Connection timeout
+    .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)    // Read timeout
+    .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
     .build()
 
 //Build Retrofit object using Moshi converter
