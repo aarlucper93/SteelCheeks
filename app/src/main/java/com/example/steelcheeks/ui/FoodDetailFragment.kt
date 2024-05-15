@@ -60,16 +60,18 @@ class FoodDetailFragment : Fragment() {
 
         Log.d("FoodDetailFragment", "imageUrl: ${viewModel.food.value?.imageUrl}")
 
-        binding.fabSaveToDatabase.setOnClickListener {
-            viewModel.insertFoodToLocalDatabase(viewModel.food)
-            if (viewModel.result.value != -1L){
+        viewModel.result.observe(viewLifecycleOwner) { result ->
+            if (result != -1L) {
                 Snackbar.make(
-                    this.requireView(),
+                    requireView(),
                     "Food saved to the local database",
                     Snackbar.LENGTH_SHORT
                 ).show()
-
             }
+        }
+
+        binding.fabSaveToDatabase.setOnClickListener {
+            viewModel.insertFoodToLocalDatabase(viewModel.food)
         }
     }
 }
