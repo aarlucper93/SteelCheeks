@@ -16,7 +16,7 @@ import com.example.steelcheeks.data.network.Nutriments
 import com.example.steelcheeks.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 
-enum class FoodsApiStatus { LOADING, ERROR, DONE }
+enum class LoadingStatus { READY, LOADING, ERROR, DONE }
 
 class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
 
@@ -27,8 +27,8 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
     val filteredLocalFoodList: LiveData<List<FoodEntity>> = _filteredLocalFoodList
 
     //Status of the most recent request
-    private val _status = MutableLiveData<FoodsApiStatus>()
-    val status: LiveData<FoodsApiStatus> = _status
+    private val _status = MutableLiveData<LoadingStatus>()
+    val status: LiveData<LoadingStatus> = _status
 
     //List of products returned by the request
     private val _products = MutableLiveData<FoodList>()
@@ -44,7 +44,11 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
     private val _snackbarMessage = SingleLiveEvent<String>()
     val snackbarMessage: LiveData<String> = _snackbarMessage
 
+    private val _remoteListMode = MutableLiveData<Boolean>(false)
+    val remoteListMode: LiveData<Boolean> = _remoteListMode
+
     var isLocalLoad: Boolean = false
+
 
     //Nutriments of the food returned by the request
     /*val kcal: LiveData<Double?> = food.map { it.product.nutriments.energyKcal }
@@ -54,7 +58,7 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
     //Launches a coroutine that uses the Foods Api Retrofit Service to get a Food entry
     fun getFoodEntries(searchTerms: String) {
         viewModelScope.launch {
-            _status.value = FoodsApiStatus.LOADING
+            _status.value = LoadingStatus.LOADING
             try {
                 val response = repository.getFoodList(searchTerms)
                 response?.let {
@@ -62,9 +66,9 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
                         _products.value = response.body()
                         _products.value?.let {
                             if (it.count > 0) {                 // Products found
-                                _status.value = FoodsApiStatus.DONE
+                                _status.value = LoadingStatus.DONE
                             } else {                            // No products found
-                                _status.value = FoodsApiStatus.ERROR
+                                _status.value = LoadingStatus.ERROR
                             }
                         }
                     }
@@ -73,7 +77,7 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
                     throw Exception("Response returned null")
                 }
             } catch (e: Exception) {
-                _status.value = FoodsApiStatus.ERROR
+                _status.value = LoadingStatus.ERROR
                 Log.e("FoodsViewModel", "Error fetching data: ${e.message}", e)
             }
         }
@@ -123,6 +127,11 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
             }
         }
     }
+
+    fun setLoadingStatusAsReady() {
+        _status.value = LoadingStatus.READY
+    }
+
 }
 
 //Allows passing the database as a parameter when initializing the viewModel.

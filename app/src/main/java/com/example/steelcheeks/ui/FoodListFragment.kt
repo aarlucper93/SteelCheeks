@@ -36,6 +36,8 @@ class FoodListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.setLoadingStatusAsReady()
+
         val adapter = FoodListAdapter{
             when (it) {
                 is FoodItem.ResponseFoodItem -> {
@@ -83,7 +85,7 @@ class FoodListFragment : Fragment() {
 
         val searchEditText = binding.searchField.editText
         searchEditText?.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_GO) {     //Enter Button is pressed
+            if (actionId == EditorInfo.IME_ACTION_GO) {     //Enter button is pressed
                 val searchText = searchEditText.text.toString()
                 viewModel.getFoodEntries(searchText)
                 return@setOnEditorActionListener true
@@ -103,7 +105,11 @@ class FoodListFragment : Fragment() {
             }
             override fun afterTextChanged(s: Editable?) {}
         })
-
         //adapter.submitList(viewModel.products.value?.products)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // Added to prevent memory leaks
     }
 }
