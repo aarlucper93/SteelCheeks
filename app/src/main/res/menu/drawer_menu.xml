@@ -2,8 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:title="Diary"
-        android:id="@+id/diaryFragment"/>
+        android:id="@+id/diaryFragment"
+
+        android:icon="@drawable/ic_diary_24"/>
     <item
         android:title="Foods"
-        android:id="@+id/foodListFragment"/>
+        android:id="@+id/foodListFragment"
+        android:icon="@drawable/ic_food_24"/>
 </menu>

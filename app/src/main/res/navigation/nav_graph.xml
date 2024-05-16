@@ -10,13 +10,21 @@
         android:label="Foods">
         <action
             android:id="@+id/action_foodListFragment_to_foodDetailFragment"
-            app:destination="@id/foodDetailFragment" />
+            app:destination="@id/foodDetailFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_left" />
     </fragment>
     <fragment
         android:id="@+id/foodDetailFragment"
         android:name="com.example.steelcheeks.ui.FoodDetailFragment"
         android:label="Food Details">
         <argument android:name="barcode" />
+        <action
+            android:id="@+id/action_foodDetailFragment_to_foodListFragment"
+            app:destination="@id/foodListFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_left"
+            app:popUpTo="@id/foodListFragment" />
     </fragment>
     <fragment
         android:id="@+id/diaryFragment"
