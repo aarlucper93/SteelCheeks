@@ -1,17 +1,21 @@
 package com.example.steelcheeks.ui
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.steelcheeks.R
 import com.example.steelcheeks.SteelCheeksApplication
 import com.example.steelcheeks.databinding.FragmentFoodDetailBinding
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 
 class FoodDetailFragment : Fragment() {
@@ -71,18 +75,40 @@ class FoodDetailFragment : Fragment() {
 
         binding.fabSaveToDatabase.setOnClickListener {
             if (viewModel.isLocalLoad) {
-                //TODO: Implement saving food to diary table. Dialog with textfields instead of snackbar
+                showConfirmationDialog()
+            } else {
+                viewModel.insertFoodToLocalDatabase(viewModel.food)
+                /*val action = FoodDetailFragmentDirections.actionFoodDetailFragmentToFoodListFragment()
+                findNavController().navigate(action)*/
+            }
+        }
+    }
+
+    private fun showConfirmationDialog() {
+
+        val food = viewModel.food.value
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_food, null)
+        val textInput = dialogView.findViewById<TextInputEditText>(R.id.textInput)
+        val tilFood = dialogView.findViewById<TextInputLayout>(R.id.textInputLayoutAddFood)
+        tilFood.hint = "Serving size (${food?.productQuantityUnit})"
+        textInput.setText(food?.productQuantity.toString())
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle(food?.productName)
+            .setView(dialogView)
+            .setPositiveButton("Add") {_, _ ->
+                //TODO: Save food to diary table.
                 Snackbar.make(
                     requireView(),
                     "Food added to diary",
                     Snackbar.LENGTH_SHORT
                 ).show()
-            } else {
-                viewModel.insertFoodToLocalDatabase(viewModel.food)
-                //Navega de vuelta a la lista
-                /*val action = FoodDetailFragmentDirections.actionFoodDetailFragmentToFoodListFragment()
-                findNavController().navigate(action)*/
+                val action = FoodDetailFragmentDirections.actionFoodDetailFragmentToDiaryFragment()
+                findNavController().navigate(action)
             }
-        }
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        dialog.show()
     }
 }
