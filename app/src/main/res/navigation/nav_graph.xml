@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/foodListFragment">
+    app:startDestination="@id/diaryFragment">
     <fragment
         android:id="@+id/foodListFragment"
-        android:name="com.example.steelcheeks.ui.FoodListFragment"
+        android:name="com.example.steelcheeks.ui.food.FoodListFragment"
         android:label="Foods">
         <action
             android:id="@+id/action_foodListFragment_to_foodDetailFragment"
@@ -16,9 +16,10 @@
     </fragment>
     <fragment
         android:id="@+id/foodDetailFragment"
-        android:name="com.example.steelcheeks.ui.FoodDetailFragment"
+        android:name="com.example.steelcheeks.ui.food.FoodDetailFragment"
         android:label="Food Details">
-        <argument android:name="barcode" />
+        <argument android:name="barcode"
+            app:argType="string" />
         <action
             android:id="@+id/action_foodDetailFragment_to_foodListFragment"
             app:destination="@id/foodListFragment"
@@ -27,11 +28,13 @@
             app:popUpTo="@id/foodListFragment" />
         <action
             android:id="@+id/action_foodDetailFragment_to_diaryFragment"
-            app:destination="@id/diaryFragment" />
+            app:destination="@id/diaryFragment"
+            app:popUpTo="@id/diaryFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/diaryFragment"
-        android:name="com.example.steelcheeks.ui.DiaryFragment"
+        android:name="com.example.steelcheeks.ui.diary.DiaryFragment"
         android:label="Diary"
         tools:layout="@layout/fragment_diary" />
 </navigation>
