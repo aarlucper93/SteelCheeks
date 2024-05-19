@@ -1,11 +1,11 @@
-package com.example.steelcheeks.ui
+package com.example.steelcheeks.ui.food
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.steelcheeks.data.database.FoodEntity
+import com.example.steelcheeks.data.database.food.FoodEntity
 import com.example.steelcheeks.databinding.ListItemBinding
 import com.example.steelcheeks.data.network.Food
 
@@ -14,7 +14,9 @@ sealed class FoodItem {
     data class LocalFoodItem(val food: FoodEntity) : FoodItem()
 }
 
-class FoodListAdapter(private val onItemClicked: (FoodItem) -> Unit) : ListAdapter<FoodItem, FoodListAdapter.ViewHolder>(Diffcallback) {
+class FoodListAdapter(private val onItemClicked: (FoodItem) -> Unit) : ListAdapter<FoodItem, FoodListAdapter.ViewHolder>(
+    Diffcallback
+) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             ListItemBinding.inflate(

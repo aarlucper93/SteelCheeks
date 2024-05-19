@@ -1,4 +1,4 @@
-package com.example.steelcheeks.ui
+package com.example.steelcheeks.ui.food
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -12,10 +12,14 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.steelcheeks.R
 import com.example.steelcheeks.SteelCheeksApplication
+import com.example.steelcheeks.data.database.diary.DiaryEntryEntity
 import com.example.steelcheeks.databinding.FragmentFoodDetailBinding
+import com.example.steelcheeks.ui.diary.DiaryViewModel
+import com.example.steelcheeks.ui.diary.DiaryViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import org.threeten.bp.LocalDate
 
 
 class FoodDetailFragment : Fragment() {
@@ -29,9 +33,10 @@ class FoodDetailFragment : Fragment() {
         )
     }
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val diaryViewModel: DiaryViewModel by activityViewModels {
+        DiaryViewModelFactory(
+            (activity?.application as SteelCheeksApplication).database
+        )
     }
 
     override fun onCreateView(
@@ -84,6 +89,7 @@ class FoodDetailFragment : Fragment() {
         }
     }
 
+
     private fun showConfirmationDialog() {
 
         val food = viewModel.food.value
@@ -97,14 +103,19 @@ class FoodDetailFragment : Fragment() {
             .setTitle(food?.productName)
             .setView(dialogView)
             .setPositiveButton("Add") {_, _ ->
-                //TODO: Save food to diary table.
-                Snackbar.make(
-                    requireView(),
-                    "Food added to diary",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-                val action = FoodDetailFragmentDirections.actionFoodDetailFragmentToDiaryFragment()
+
+                val quantity = textInput.text.toString().toLongOrNull() ?: food?.productQuantity ?: 100
+                val diaryEntry = DiaryEntryEntity(
+                    foodCode = food?.code ?: "",
+                    date = LocalDate.now(),
+                    quantity = quantity
+                )
+                diaryViewModel.insertDiaryEntry(diaryEntry)
+                Snackbar.make(requireView(), "Food added to diary", Snackbar.LENGTH_SHORT).show()
+                val action =
+                    FoodDetailFragmentDirections.actionFoodDetailFragmentToDiaryFragment()
                 findNavController().navigate(action)
+
             }
             .setNegativeButton("Cancel", null)
             .create()

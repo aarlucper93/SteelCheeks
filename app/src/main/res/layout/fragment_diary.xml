@@ -1,20 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.DiaryFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Diary Screen"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:textSize="20sp"/>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.steelcheeks.ui.diary.DiaryViewModel" />
+    </data>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.diary.DiaryFragment">
+
+        <!-- TODO: Update blank fragment layout -->
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="20sp"
+            tools:text="[Current Date]"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Diary Screen"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tvCalories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/tvCaloriesValue"
+            app:layout_constraintStart_toStartOf="@id/tvCaloriesValue"
+            android:text="Calories"
+            tools:text="Calories"/>
+
+        <TextView
+            android:id="@+id/tvCaloriesValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="230 kcal"/>
+
+        <TextView
+            android:id="@+id/tvCarbs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/tvCaloriesValue"
+            app:layout_constraintStart_toStartOf="@id/tvCarbsValue"
+            android:text="Carbs"
+            tools:text="Carbs"/>
+
+        <TextView
+            android:id="@+id/tvCarbsValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toEndOf="@id/tvCaloriesValue"
+            app:layout_constraintBottom_toBottomOf="@id/tvCaloriesValue"
+            tools:text="169g"/>
+
+        <TextView
+            android:id="@+id/tvProteins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/tvProteinsValue"
+            app:layout_constraintStart_toStartOf="@id/tvProteinsValue"
+            android:text="Protein"
+            tools:text="Protein"/>
+
+        <TextView
+            android:id="@+id/tvProteinsValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toEndOf="@id/tvCarbsValue"
+            app:layout_constraintBottom_toBottomOf="@id/tvCaloriesValue"
+            tools:text="169g"/>
+
+        <TextView
+            android:id="@+id/tvFats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/tvFatsValue"
+            app:layout_constraintStart_toStartOf="@id/tvFatsValue"
+            android:text="Fat"
+            tools:text="Fat"/>
+
+        <TextView
+            android:id="@+id/tvFatsValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toEndOf="@id/tvProteinsValue"
+            app:layout_constraintBottom_toBottomOf="@id/tvCaloriesValue"
+            tools:text="169g"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

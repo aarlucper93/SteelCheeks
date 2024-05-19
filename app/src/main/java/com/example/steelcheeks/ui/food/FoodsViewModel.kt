@@ -1,4 +1,4 @@
-package com.example.steelcheeks.ui
+package com.example.steelcheeks.ui.food
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.steelcheeks.data.FoodRepository
-import com.example.steelcheeks.data.database.FoodEntity
+import com.example.steelcheeks.data.database.food.FoodEntity
 import com.example.steelcheeks.data.database.FoodRoomDatabase
 import com.example.steelcheeks.data.network.Food
 import com.example.steelcheeks.data.network.FoodList

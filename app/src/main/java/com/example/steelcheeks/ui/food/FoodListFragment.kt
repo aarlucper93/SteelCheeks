@@ -1,4 +1,4 @@
-package com.example.steelcheeks.ui
+package com.example.steelcheeks.ui.food
 
 import android.os.Bundle
 import android.text.Editable

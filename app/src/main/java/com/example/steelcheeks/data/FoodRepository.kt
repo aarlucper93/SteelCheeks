@@ -1,7 +1,9 @@
 package com.example.steelcheeks.data
 
 import android.util.Log
-import com.example.steelcheeks.data.database.FoodEntity
+import com.example.steelcheeks.data.database.diary.DiaryEntryEntity
+import com.example.steelcheeks.data.database.diary.DiaryTotals
+import com.example.steelcheeks.data.database.food.FoodEntity
 import com.example.steelcheeks.data.database.FoodRoomDatabase
 import com.example.steelcheeks.data.network.Food
 import com.example.steelcheeks.data.network.FoodList
@@ -10,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import retrofit2.Response
+import org.threeten.bp.LocalDate
 
 class FoodRepository(private val database: FoodRoomDatabase) {
 
@@ -45,5 +48,20 @@ class FoodRepository(private val database: FoodRoomDatabase) {
     }
 
     fun getLocalFoodList(): Flow<List<FoodEntity>> = database.foodDao().getAllFoods()
+
+    suspend fun insertDiaryEntry(diaryEntry: DiaryEntryEntity): Long {
+        return withContext(Dispatchers.IO) {
+            database.diaryDao().insert(diaryEntry)
+        }
+    }
+
+    fun getDiaryEntriesForDate(date: LocalDate): Flow<List<DiaryEntryEntity>> {
+        return database.diaryDao().getDiaryEntriesForDate(date)
+    }
+
+    fun getDiaryTotalsForDate(date: LocalDate): Flow<DiaryTotals> {
+        return database.diaryDao().getDiaryTotalsForDate(date)
+    }
+
 
 }
