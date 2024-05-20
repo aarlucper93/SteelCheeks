@@ -15,12 +15,12 @@ class DiaryFragment : Fragment() {
 
     private var _binding: FragmentDiaryBinding? = null
     private val binding get() = _binding!!
-
     private val viewModel: DiaryViewModel by activityViewModels {
         DiaryViewModelFactory(
             (activity?.application as SteelCheeksApplication).database
         )
     }
+    private lateinit var diaryAdapter: DiaryAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +37,14 @@ class DiaryFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
+        diaryAdapter = DiaryAdapter()
+        binding.recyclerView.adapter = diaryAdapter
+
+        viewModel.diaryEntries.observe(viewLifecycleOwner) {entries ->
+            entries?.let {
+                diaryAdapter.submitList(it)
+            }
+        }
 
         // Update UI with the diary totals
         viewModel.diaryTotals.observe(viewLifecycleOwner) { totals ->
@@ -50,6 +58,10 @@ class DiaryFragment : Fragment() {
 
         val dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
         binding.tvDate.text = viewModel.date.value?.let { dateFormatter.format(it) }
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
