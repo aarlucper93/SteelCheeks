@@ -7,12 +7,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.steelcheeks.data.database.diary.DiaryEntryEntity
-import com.example.steelcheeks.databinding.ListItemBinding
+import com.example.steelcheeks.databinding.ListItemDiaryBinding
 
 class DiaryAdapter() : ListAdapter<DiaryEntryEntity, DiaryAdapter.ViewHolder>(Diffcallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            ListItemBinding.inflate(
+            ListItemDiaryBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -25,7 +25,7 @@ class DiaryAdapter() : ListAdapter<DiaryEntryEntity, DiaryAdapter.ViewHolder>(Di
         holder.bind(item)
     }
 
-    class ViewHolder(private var binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(private var binding: ListItemDiaryBinding) : RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")        //Evita tener que pasarle el contexto al adapter para
         fun bind(diaryEntry: DiaryEntryEntity) {
             binding.apply {
