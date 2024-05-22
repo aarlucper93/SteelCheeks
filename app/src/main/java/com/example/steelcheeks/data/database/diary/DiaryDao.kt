@@ -25,13 +25,12 @@ interface DiaryDao {
 
     @Query("""
         SELECT 
-            SUM(f.`energy-kcal` * d.serving_quantity / 100) AS totalCalories,
-            SUM(f.carbohydrates * d.serving_quantity / 100) AS totalCarbohydrates,
-            SUM(f.proteins * d.serving_quantity / 100) AS totalProteins,
-            SUM(f.fat * d.serving_quantity / 100) AS totalFat
-        FROM diary d
-        JOIN food f ON d.food_code = f.code
-        WHERE d.date = :date
+            SUM(`energy-kcal` * serving_quantity / 100) AS totalCalories,
+            SUM(carbohydrates * serving_quantity / 100) AS totalCarbohydrates,
+            SUM(proteins * serving_quantity / 100) AS totalProteins,
+            SUM(fat * serving_quantity / 100) AS totalFat
+        FROM diary
+        WHERE date = :date
     """)
     fun getDiaryTotalsForDate(date: LocalDate) : Flow<DiaryTotals>
 }
