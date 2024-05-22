@@ -38,13 +38,14 @@ class FoodRepository(private val database: FoodRoomDatabase) {
     }
 
     suspend fun getFoodList(searchTerms: String): Response<FoodList>? {
-        var response: Response<FoodList>? = null
-        try {
-            response = FoodsApi.retrofitService.getFoodList(searchTerms)
-        } catch (e: Exception) {
-            Log.e("FoodRepository", "Error fetching data: ${e.message}", e)
+        return withContext(Dispatchers.IO) {
+            try {
+                FoodsApi.retrofitService.getFoodList(searchTerms)
+            } catch (e: Exception) {
+                Log.e("FoodRepository", "Error fetching data: ${e.message}", e)
+                null
+            }
         }
-        return response
     }
 
     fun getLocalFoodList(): Flow<List<FoodEntity>> = database.foodDao().getAllFoods()

@@ -11,7 +11,7 @@ import com.example.steelcheeks.data.database.food.FoodDao
 import com.example.steelcheeks.data.database.food.FoodEntity
 
 
-@Database(entities = [FoodEntity::class, DiaryEntryEntity::class], version = 2, exportSchema = false)
+@Database(entities = [FoodEntity::class, DiaryEntryEntity::class], version = 3, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class FoodRoomDatabase : RoomDatabase() {
 

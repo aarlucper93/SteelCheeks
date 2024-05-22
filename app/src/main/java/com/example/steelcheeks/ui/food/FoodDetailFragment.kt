@@ -107,8 +107,16 @@ class FoodDetailFragment : Fragment() {
                 val quantity = textInput.text.toString().toLongOrNull() ?: food?.productQuantity ?: 100
                 val diaryEntry = DiaryEntryEntity(
                     foodCode = food?.code ?: "",
-                    date = LocalDate.now(),
-                    quantity = quantity
+                    date = LocalDate.now(),     //TODO: Expandir para dar la posibilidad de añadir alimentos en otros días.
+                    quantity = quantity,
+                    productName = food?.productName ?: "",
+                    productBrands = food?.productBrands,
+                    productQuantityUnit = food?.productQuantityUnit,
+                    imageUrl = food?.imageUrl,
+                    energyKcal = food?.nutriments?.energyKcal,
+                    carbohydrates = food?.nutriments?.carbohydrates,
+                    proteins = food?.nutriments?.proteins,
+                    fat = food?.nutriments?.fat
                 )
                 diaryViewModel.insertDiaryEntry(diaryEntry)
                 Snackbar.make(requireView(), "Food added to diary", Snackbar.LENGTH_SHORT).show()

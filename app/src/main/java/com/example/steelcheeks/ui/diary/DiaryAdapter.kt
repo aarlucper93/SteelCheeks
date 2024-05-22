@@ -1,5 +1,6 @@
 package com.example.steelcheeks.ui.diary
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -25,10 +26,13 @@ class DiaryAdapter() : ListAdapter<DiaryEntryEntity, DiaryAdapter.ViewHolder>(Di
     }
 
     class ViewHolder(private var binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        @SuppressLint("SetTextI18n")        //Evita tener que pasarle el contexto al adapter para
         fun bind(diaryEntry: DiaryEntryEntity) {
             binding.apply {
-                binding.productName.text = diaryEntry.foodCode
-                binding.productAmount.text = diaryEntry.quantity.toString()
+                binding.productName.text = diaryEntry.productName
+                binding.productBrand.text = diaryEntry.productBrands
+                binding.productAmount.text = "${diaryEntry.quantity}${diaryEntry.productQuantityUnit}"
+                binding.productEnergy.text ="${diaryEntry.energyKcal}kcal"
             }
         }
     }

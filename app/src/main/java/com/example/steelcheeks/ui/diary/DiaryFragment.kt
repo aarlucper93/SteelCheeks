@@ -35,9 +35,10 @@ class DiaryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        diaryAdapter = DiaryAdapter()
+
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
-        diaryAdapter = DiaryAdapter()
         binding.recyclerView.adapter = diaryAdapter
 
         viewModel.diaryEntries.observe(viewLifecycleOwner) {entries ->

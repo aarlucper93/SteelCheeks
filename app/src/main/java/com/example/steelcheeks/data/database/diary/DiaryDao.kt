@@ -25,10 +25,10 @@ interface DiaryDao {
 
     @Query("""
         SELECT 
-            SUM(f.`energy-kcal` * d.quantity / 100) AS totalCalories,
-            SUM(f.carbohydrates * d.quantity / 100) AS totalCarbohydrates,
-            SUM(f.proteins * d.quantity / 100) AS totalProteins,
-            SUM(f.fat * d.quantity / 100) AS totalFat
+            SUM(f.`energy-kcal` * d.serving_quantity / 100) AS totalCalories,
+            SUM(f.carbohydrates * d.serving_quantity / 100) AS totalCarbohydrates,
+            SUM(f.proteins * d.serving_quantity / 100) AS totalProteins,
+            SUM(f.fat * d.serving_quantity / 100) AS totalFat
         FROM diary d
         JOIN food f ON d.food_code = f.code
         WHERE d.date = :date
