@@ -57,11 +57,11 @@ class FoodDetailFragment : Fragment() {
             tvBrandValue.text = viewModel.food.value?.productBrands
             tvServingSizeValue.text = viewModel.food.value?.productQuantity.toString()
             tvServingUnitValue.text = viewModel.food.value?.productQuantityUnit
-            tvCaloriesValue.text = viewModel.food.value?.nutriments?.energyKcal.toString()
-            tvProteinValue.text = viewModel.food.value?.nutriments?.proteins.toString()
-            tvCarbsValue.text = viewModel.food.value?.nutriments?.carbohydrates.toString()
-            tvFatValue.text = viewModel.food.value?.nutriments?.fat.toString()
-            if (viewModel.isLocalLoad) {
+            tvCaloriesValue.text = viewModel.food.value?.energyKcal.toString()
+            tvProteinValue.text = viewModel.food.value?.proteins.toString()
+            tvCarbsValue.text = viewModel.food.value?.carbohydrates.toString()
+            tvFatValue.text = viewModel.food.value?.fat.toString()
+            if (viewModel.food.value!!.isFromLocal) {
                 fabSaveToDatabase.setImageResource(R.drawable.ic_add_24)
             }
 
@@ -79,7 +79,7 @@ class FoodDetailFragment : Fragment() {
         }
 
         binding.fabSaveToDatabase.setOnClickListener {
-            if (viewModel.isLocalLoad) {
+            if (viewModel.food.value!!.isFromLocal) {
                 showConfirmationDialog()
             } else {
                 viewModel.insertFoodToLocalDatabase(viewModel.food)
@@ -113,10 +113,10 @@ class FoodDetailFragment : Fragment() {
                     productBrands = food?.productBrands,
                     productQuantityUnit = food?.productQuantityUnit,
                     imageUrl = food?.imageUrl,
-                    energyKcal = food?.nutriments?.energyKcal,
-                    carbohydrates = food?.nutriments?.carbohydrates,
-                    proteins = food?.nutriments?.proteins,
-                    fat = food?.nutriments?.fat
+                    energyKcal = food?.energyKcal,
+                    carbohydrates = food?.carbohydrates,
+                    proteins = food?.proteins,
+                    fat = food?.fat
                 )
                 diaryViewModel.insertDiaryEntry(diaryEntry)
                 Snackbar.make(requireView(), "Food added to diary", Snackbar.LENGTH_SHORT).show()

@@ -10,18 +10,22 @@ import androidx.lifecycle.viewModelScope
 import com.example.steelcheeks.data.FoodRepository
 import com.example.steelcheeks.data.database.food.FoodEntity
 import com.example.steelcheeks.data.database.FoodRoomDatabase
-import com.example.steelcheeks.data.network.Food
-import com.example.steelcheeks.data.network.FoodList
+import com.example.steelcheeks.data.network.Product
+import com.example.steelcheeks.data.network.OpenFoodFactsResponse
 import com.example.steelcheeks.data.network.Nutriments
+import com.example.steelcheeks.domain.Food
 import com.example.steelcheeks.utils.SingleLiveEvent
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 enum class LoadingStatus { READY, LOADING, ERROR, DONE }
 
 class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
 
-    val localFoodList: LiveData<List<FoodEntity>> =
-        repository.getLocalFoodList().asLiveData()
+    val localFoodList: LiveData<List<FoodEntity>> = repository.getLocalFoodList().asLiveData()
+
+    private val _foodItems = MutableLiveData<List<Food>>(localFoodList.value?.map { repository.toDomainModel(it) })
+    val foodItems: LiveData<List<Food>> = _foodItems
 
     private val _filteredLocalFoodList = MutableLiveData<List<FoodEntity>>()
     val filteredLocalFoodList: LiveData<List<FoodEntity>> = _filteredLocalFoodList
@@ -31,8 +35,8 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
     val status: LiveData<LoadingStatus> = _status
 
     //List of products returned by the request
-    private val _products = MutableLiveData<FoodList>()
-    val products: LiveData<FoodList> = _products
+    private val _products = MutableLiveData<OpenFoodFactsResponse>()
+    val products: LiveData<OpenFoodFactsResponse> = _products
 
     //The Food returned by the request -- OLD
     private val _food = MutableLiveData<Food>(null)
@@ -63,10 +67,11 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
                 val response = repository.getFoodList(searchTerms)
                 response?.let {
                     if (response.isSuccessful) {
-                        _products.value = response.body()
-                        _products.value?.let {
+                        val responseBody = response.body()
+                        responseBody?.let {
                             if (it.count > 0) {                 // Products found
                                 _status.value = LoadingStatus.DONE
+                                _foodItems.value = it.products.map { product -> repository.toDomainModel(product) }
                             } else {                            // No products found
                                 _status.value = LoadingStatus.ERROR
                             }
@@ -83,6 +88,13 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
         }
     }
 
+    fun getLocalFoodEntries() {
+        viewModelScope.launch {
+            _foodItems.value = localFoodList.value?.map {repository.toDomainModel(it)}
+            Log.d("FoodsViewModel", "${_foodItems.value}")
+        }
+    }
+
     fun filterLocalFoodList(query: String) {
         if (query.isBlank()) {
             _filteredLocalFoodList.value = localFoodList.value
@@ -95,28 +107,7 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
     }
 
     fun setFoodItemByBarcode(barcode: String) {
-        if (isLocalLoad) {
-            //Map selected local food item to Food Livedata
-            val foodEntity = localFoodList.value?.filter { it.code == barcode }?.get(0)
-            foodEntity?.let {
-                _food.value = Food (
-                    code = foodEntity.code,
-                    productName = foodEntity.productName,
-                    productBrands = foodEntity.productBrands,
-                    imageUrl = foodEntity.imageUrl,
-                    productQuantityUnit = foodEntity.productQuantityUnit,
-                    nutriments = Nutriments(
-                        energyKcal = foodEntity.energyKcal,
-                        carbohydrates = foodEntity.carbohydrates,
-                        proteins = foodEntity.proteins,
-                        fat = foodEntity.fat
-                    )
-                )
-            }
-        }
-        else {
-            _food.value = _products.value?.products?.filter { it.code == barcode }?.get(0)
-        }
+        _food.value = _foodItems.value?.filter { it.code == barcode }?.get(0)
     }
 
     fun insertFoodToLocalDatabase(food: LiveData<Food>) {
