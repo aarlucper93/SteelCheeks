@@ -69,7 +69,7 @@
             android:id="@+id/tvCalories"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Calories"
+            android:text="@string/diary_total_calories"
             app:layout_constraintBottom_toTopOf="@id/tvCaloriesValue"
             app:layout_constraintStart_toStartOf="@id/tvCaloriesValue"
             tools:text="Calories" />
@@ -96,7 +96,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:text="Carbs"
+            android:text="@string/diary_total_carbs"
             app:layout_constraintBottom_toTopOf="@id/tvCaloriesValue"
             app:layout_constraintStart_toEndOf="@id/barrierCal"
             tools:text="Carbs" />
@@ -122,7 +122,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:text="Protein"
+            android:text="@string/diary_total_protein"
             app:layout_constraintBottom_toTopOf="@id/tvProteinsValue"
             app:layout_constraintStart_toEndOf="@id/barrierCarb"
             tools:text="Protein" />
@@ -147,7 +147,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:text="Fat"
+            android:text="@string/diary_total_fat"
             app:layout_constraintBottom_toTopOf="@id/tvFatsValue"
             app:layout_constraintStart_toEndOf="@id/barrierProt"
             tools:text="Fat" />

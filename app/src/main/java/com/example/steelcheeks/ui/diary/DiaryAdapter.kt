@@ -32,7 +32,7 @@ class DiaryAdapter(private val onLongClickListener: (DiaryEntryEntity) -> Unit) 
                 binding.productName.text = diaryEntry.productName
                 binding.productBrand.text = diaryEntry.productBrands
                 binding.productAmount.text = "${diaryEntry.quantity}${diaryEntry.productQuantityUnit}"
-                binding.productEnergy.text ="${diaryEntry.energyKcal?.times(diaryEntry.quantity)?.div(100)}kcal"
+                binding.productEnergy.text ="${diaryEntry.energyKcal?.times(diaryEntry.quantity)?.div(100)?.toInt()}kcal"
             }
 
             binding.root.setOnLongClickListener {

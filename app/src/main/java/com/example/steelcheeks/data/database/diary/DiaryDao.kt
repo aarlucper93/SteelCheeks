@@ -25,10 +25,10 @@ interface DiaryDao {
 
     @Query("""
         SELECT 
-            SUM(`energy-kcal` * serving_quantity / 100) AS totalCalories,
-            SUM(carbohydrates * serving_quantity / 100) AS totalCarbohydrates,
-            SUM(proteins * serving_quantity / 100) AS totalProteins,
-            SUM(fat * serving_quantity / 100) AS totalFat
+            ROUND(SUM(`energy-kcal` * serving_quantity / 100)) AS totalCalories,
+            ROUND(SUM(carbohydrates * serving_quantity / 100), 2) AS totalCarbohydrates,
+            ROUND(SUM(proteins * serving_quantity / 100), 2) AS totalProteins,
+            ROUND(SUM(fat * serving_quantity / 100), 2) AS totalFat
         FROM diary
         WHERE date = :date
     """)
@@ -36,7 +36,7 @@ interface DiaryDao {
 }
 
 data class DiaryTotals(
-    val totalCalories: Double?,
+    val totalCalories: Int?,
     val totalCarbohydrates: Double?,
     val totalProteins: Double?,
     val totalFat: Double?
