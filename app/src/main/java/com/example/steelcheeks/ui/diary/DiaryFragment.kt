@@ -5,8 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import com.example.steelcheeks.SteelCheeksApplication
+import com.example.steelcheeks.data.database.diary.DiaryEntryEntity
 import com.example.steelcheeks.databinding.FragmentDiaryBinding
 import org.threeten.bp.format.DateTimeFormatter
 
@@ -35,7 +37,7 @@ class DiaryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        diaryAdapter = DiaryAdapter()
+        diaryAdapter = DiaryAdapter {diaryEntry -> showDeleteConfirmationDialog(diaryEntry)}
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
@@ -77,6 +79,17 @@ class DiaryFragment : Fragment() {
         viewModel.date.observe(viewLifecycleOwner) { date ->
             binding.tvDate.text = dateFormatter.format(date)
         }
+    }
+
+    private fun showDeleteConfirmationDialog(diaryEntry: DiaryEntryEntity) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete Entry")
+            .setMessage("Are you sure you want to delete this entry?")
+            .setPositiveButton("Yes") { _, _ ->
+                viewModel.deleteDiaryEntry(diaryEntry)
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 
     override fun onDestroyView() {

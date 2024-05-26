@@ -57,6 +57,12 @@ class FoodRepository(private val database: FoodRoomDatabase) {
         }
     }
 
+    suspend fun deleteDiaryEntry(diaryEntry: DiaryEntryEntity) {
+        withContext(Dispatchers.IO) {
+            database.diaryDao().delete(diaryEntry)
+        }
+    }
+
     fun getDiaryEntriesForDate(date: LocalDate): Flow<List<DiaryEntryEntity>> {
         return database.diaryDao().getDiaryEntriesForDate(date)
     }

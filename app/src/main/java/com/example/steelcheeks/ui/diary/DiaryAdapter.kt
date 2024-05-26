@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.steelcheeks.data.database.diary.DiaryEntryEntity
 import com.example.steelcheeks.databinding.ListItemDiaryBinding
 
-class DiaryAdapter() : ListAdapter<DiaryEntryEntity, DiaryAdapter.ViewHolder>(Diffcallback) {
+class DiaryAdapter(private val onLongClickListener: (DiaryEntryEntity) -> Unit) : ListAdapter<DiaryEntryEntity, DiaryAdapter.ViewHolder>(Diffcallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             ListItemDiaryBinding.inflate(
@@ -22,18 +22,24 @@ class DiaryAdapter() : ListAdapter<DiaryEntryEntity, DiaryAdapter.ViewHolder>(Di
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item)
+        holder.bind(item, onLongClickListener)
     }
 
     class ViewHolder(private var binding: ListItemDiaryBinding) : RecyclerView.ViewHolder(binding.root) {
-        @SuppressLint("SetTextI18n")        //Evita tener que pasarle el contexto al adapter para
-        fun bind(diaryEntry: DiaryEntryEntity) {
+        @SuppressLint("SetTextI18n")        //Se utilizar string resources para evitar pasarle el contexto al adapter
+        fun bind(diaryEntry: DiaryEntryEntity, onLongClickListener: (DiaryEntryEntity) -> Unit) {
             binding.apply {
                 binding.productName.text = diaryEntry.productName
                 binding.productBrand.text = diaryEntry.productBrands
                 binding.productAmount.text = "${diaryEntry.quantity}${diaryEntry.productQuantityUnit}"
-                binding.productEnergy.text ="${diaryEntry.energyKcal}kcal"
+                binding.productEnergy.text ="${diaryEntry.energyKcal?.times(diaryEntry.quantity)?.div(100)}kcal"
             }
+
+            binding.root.setOnLongClickListener {
+                onLongClickListener(diaryEntry)
+                true
+            }
+
         }
     }
 

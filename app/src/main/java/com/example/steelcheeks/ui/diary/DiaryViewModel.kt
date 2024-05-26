@@ -34,6 +34,14 @@ class DiaryViewModel (private val repository: FoodRepository) : ViewModel() {
         }
     }
 
+    fun deleteDiaryEntry(entry: DiaryEntryEntity) {
+        viewModelScope.launch {
+            repository.deleteDiaryEntry(entry)
+            // Update the totals and entries after deletion
+            _date.value = _date.value
+        }
+    }
+
     fun setDate(newDate: LocalDate) {
         _date.value = newDate
     }
