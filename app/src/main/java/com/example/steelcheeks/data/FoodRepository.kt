@@ -95,7 +95,4 @@ class FoodRepository(private val database: FoodRoomDatabase) {
         )
     }
 
-
-
-
 }

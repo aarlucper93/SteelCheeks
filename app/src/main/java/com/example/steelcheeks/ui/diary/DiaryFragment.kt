@@ -57,8 +57,26 @@ class DiaryFragment : Fragment() {
             }
         }
 
+        //Fecha inicial
         val dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
         binding.tvDate.text = viewModel.date.value?.let { dateFormatter.format(it) }
+
+        binding.btnBack.setOnClickListener {
+            viewModel.date.value?.let {
+                viewModel.setDate(it.minusDays(1))
+            }
+        }
+
+        binding.btnForward.setOnClickListener {
+            viewModel.date.value?.let {
+                viewModel.setDate(it.plusDays(1))
+            }
+        }
+
+        // Observe the date and update UI accordingly
+        viewModel.date.observe(viewLifecycleOwner) { date ->
+            binding.tvDate.text = dateFormatter.format(date)
+        }
     }
 
     override fun onDestroyView() {

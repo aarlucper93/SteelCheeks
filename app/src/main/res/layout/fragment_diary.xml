@@ -27,7 +27,7 @@
             tools:text="[Current Date]" />
 
         <ImageButton
-            android:id="@+id/btnBack"
+            android:id="@+id/btnForward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_arrow_forward_24"
@@ -37,7 +37,7 @@
             android:background="#00000000" />
 
         <ImageButton
-            android:id="@+id/btnForward"
+            android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_arrow_back_24"
