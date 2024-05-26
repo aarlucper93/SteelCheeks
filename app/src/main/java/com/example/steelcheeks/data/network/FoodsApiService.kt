@@ -34,9 +34,11 @@ class UserAgentInterceptor(private val userAgent: String) : Interceptor {
 // Create an OkHttpClient and add the UserAgentInterceptor
 val okHttpClient = OkHttpClient.Builder()
     .addInterceptor(UserAgentInterceptor("Steelcheeks/0.1.0 (aaronlp.ai93@gmail.com)"))
-    .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS) // Connection timeout
-    .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)    // Read timeout
-    .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+    .connectTimeout(45, java.util.concurrent.TimeUnit.SECONDS) // Connection timeout
+    .readTimeout(45, java.util.concurrent.TimeUnit.SECONDS)    // Read timeout
+    .writeTimeout(45, java.util.concurrent.TimeUnit.SECONDS)
+    .callTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+
     .build()
 
 //Build Retrofit object using Moshi converter
@@ -55,7 +57,7 @@ interface FoodsApiService {
         @Query("action") action: String = "process",
         @Query("json") json: Int = 1,
         @Query("fields") fields: String = "product_name,brands,nutriments,code,image_url,serving_quantity,product_quantity_unit"
-    ): retrofit2.Response<FoodList>
+    ): retrofit2.Response<OpenFoodFactsResponse>
 }
 
 //Public Api object that exposes the lazy-initialized Retrofit service

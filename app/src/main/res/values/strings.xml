@@ -21,4 +21,8 @@
     <string name="detail_view_fat_field">Fat (g)</string>
     <string name="save_food_to_local_database">Save food to local database</string>
     <string name="tv_food_detail_serving_unit">Serving Unit</string>
+    <string name="diary_total_calories">Calories</string>
+    <string name="diary_total_carbs">Carbs</string>
+    <string name="diary_total_protein">Protein</string>
+    <string name="diary_total_fat">Fat</string>
 </resources>

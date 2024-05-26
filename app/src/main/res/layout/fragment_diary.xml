@@ -1,14 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.DiaryFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.steelcheeks.ui.diary.DiaryViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        tools:context=".ui.diary.DiaryFragment">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="[Current Date]" />
+
+        <ImageButton
+            android:id="@+id/btnForward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_forward_24"
+            app:layout_constraintTop_toTopOf="@id/tvDate"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="20dp"
+            android:background="#00000000" />
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back_24"
+            app:layout_constraintTop_toTopOf="@id/tvDate"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"
+            android:background="#00000000" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDate"
+            app:layout_constraintBottom_toTopOf="@id/divider"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/tvCarbs"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/tvCalories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/diary_total_calories"
+            app:layout_constraintBottom_toTopOf="@id/tvCaloriesValue"
+            app:layout_constraintStart_toStartOf="@id/tvCaloriesValue"
+            tools:text="Calories" />
+
+        <TextView
+            android:id="@+id/tvCaloriesValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="230 kcal" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierCal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="tvCalories,tvCaloriesValue" />
+
+        <TextView
+            android:id="@+id/tvCarbs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="@string/diary_total_carbs"
+            app:layout_constraintBottom_toTopOf="@id/tvCaloriesValue"
+            app:layout_constraintStart_toEndOf="@id/barrierCal"
+            tools:text="Carbs" />
+
+        <TextView
+            android:id="@+id/tvCarbsValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintBottom_toBottomOf="@id/tvCaloriesValue"
+            app:layout_constraintStart_toStartOf="@id/tvCarbs"
+            tools:text="169g" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierCarb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="tvCarbs,tvCarbsValue" />
+
+        <TextView
+            android:id="@+id/tvProteins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="@string/diary_total_protein"
+            app:layout_constraintBottom_toTopOf="@id/tvProteinsValue"
+            app:layout_constraintStart_toEndOf="@id/barrierCarb"
+            tools:text="Protein" />
+
+        <TextView
+            android:id="@+id/tvProteinsValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/tvCaloriesValue"
+            app:layout_constraintStart_toStartOf="@id/tvProteins"
+            tools:text="169g" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierProt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="tvProteins,tvProteinsValue" />
+
+        <TextView
+            android:id="@+id/tvFats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="@string/diary_total_fat"
+            app:layout_constraintBottom_toTopOf="@id/tvFatsValue"
+            app:layout_constraintStart_toEndOf="@id/barrierProt"
+            tools:text="Fat" />
+
+        <TextView
+            android:id="@+id/tvFatsValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/tvCaloriesValue"
+            app:layout_constraintStart_toStartOf="@id/tvFats"
+            tools:text="169g" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_save_to_database"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            app:srcCompat="@drawable/ic_add_24"
+            android:contentDescription="@string/save_food_to_local_database" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

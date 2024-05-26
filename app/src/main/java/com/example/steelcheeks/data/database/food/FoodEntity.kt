@@ -1,10 +1,8 @@
-package com.example.steelcheeks.data.database
+package com.example.steelcheeks.data.database.food
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.squareup.moshi.Json
-import retrofit2.http.Url
 
 @Entity (tableName = "food")
 data class FoodEntity (

@@ -1,4 +1,4 @@
-package com.example.steelcheeks.ui
+package com.example.steelcheeks.ui.food
 
 import android.os.Bundle
 import android.text.Editable
@@ -36,19 +36,12 @@ class FoodListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = FoodListAdapter{
-            when (it) {
-                is FoodItem.ResponseFoodItem -> {
-                    viewModel.isLocalLoad = false
-                    val action = FoodListFragmentDirections.actionFoodListFragmentToFoodDetailFragment(it.food.code)
-                    findNavController().navigate(action)
-                }
-                is FoodItem.LocalFoodItem -> {
-                    viewModel.isLocalLoad = true
-                    val action = FoodListFragmentDirections.actionFoodListFragmentToFoodDetailFragment(it.food.code)
-                    findNavController().navigate(action)
-                }
-            }
+        viewModel.setLoadingStatusAsReady()
+
+        val adapter = FoodListAdapter {
+            val action =
+                FoodListFragmentDirections.actionFoodListFragmentToFoodDetailFragment(it.code)
+            findNavController().navigate(action)
         }
 
         // The lifecycle of the LiveData bound to the layout is that of the Fragment's
@@ -59,32 +52,46 @@ class FoodListFragment : Fragment() {
         // Gives the binding access to the FoodsViewModel
         binding.viewModel = viewModel
 
-        viewModel.products.observe(viewLifecycleOwner) {foodList ->
+        /* viewModel.products.observe(viewLifecycleOwner) {foodList ->
             foodList?.let {
                 val foodItems = it.products.map { food -> FoodItem.ResponseFoodItem(food) }
                 adapter.submitList(foodItems)
             }
         }
 
-        viewModel.localFoodList.observe(viewLifecycleOwner) {localFoodList ->
-            localFoodList?.let {
-                val foodItems = it.map { food -> FoodItem.LocalFoodItem(food) }
-                adapter.submitList(foodItems)
-            }
-        }
-
         viewModel.filteredLocalFoodList.observe(viewLifecycleOwner) { filteredList ->
             filteredList?.let {
-                val foodItems = it.map { food -> FoodItem.LocalFoodItem(food) }
                 adapter.submitList(foodItems)
+            }
+        } */
+
+        viewModel.foodItems.observe(viewLifecycleOwner) {foodList ->
+            foodList?.let {
+                adapter.submitList(foodList)
+            }
+        }
+
+        viewModel.localFoodList.observe(viewLifecycleOwner) {localFoodList ->
+            localFoodList?.let {
+                viewModel.setListToLocalFoodItems()
+                adapter.submitList(viewModel.foodItems.value)
             }
         }
 
 
+        //Search Field
         val searchEditText = binding.searchField.editText
+
+        viewModel.searchQuery.observe(viewLifecycleOwner) { query ->
+            if (searchEditText?.text.toString() != query) {
+                searchEditText?.setText(query)
+            }
+        }
+
         searchEditText?.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_GO) {     //Enter Button is pressed
+            if (actionId == EditorInfo.IME_ACTION_GO) {     //Enter button is pressed
                 val searchText = searchEditText.text.toString()
+                viewModel.setSearchQuery(searchText)
                 viewModel.getFoodEntries(searchText)
                 return@setOnEditorActionListener true
             }
@@ -95,6 +102,7 @@ class FoodListFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val searchText = s.toString()
+                viewModel.setSearchQuery(searchText)
                 if (searchText.isNotBlank()) {
                     viewModel.filterLocalFoodList(searchText)
                 } else {
@@ -103,7 +111,10 @@ class FoodListFragment : Fragment() {
             }
             override fun afterTextChanged(s: Editable?) {}
         })
+    }
 
-        //adapter.submitList(viewModel.products.value?.products)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // Added to prevent memory leaks
     }
 }

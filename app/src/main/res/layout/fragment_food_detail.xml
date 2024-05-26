@@ -27,6 +27,7 @@
                     android:layout_marginTop="10dp"
                     android:text="@string/detail_view_details_header"
                     android:textStyle="bold"
+                    android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -48,7 +49,7 @@
                     android:id="@+id/tvBarcode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="20dp"
                     android:text="@string/detail_view_barcode_field"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/foodDetailImage" />
@@ -66,6 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:layout_marginEnd="30dp"
                     android:text="@string/detail_view_name_field"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvBarcode" />
@@ -76,6 +78,11 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tvName"
+                    app:layout_constraintStart_toEndOf="@id/tvName"
+                    android:layout_marginStart="20dp"
+                    app:layout_constraintHorizontal_bias="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     tools:text="Nombre del producto" />
 
                 <TextView
@@ -138,6 +145,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:text="@string/detail_view_nutritional_values_header"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

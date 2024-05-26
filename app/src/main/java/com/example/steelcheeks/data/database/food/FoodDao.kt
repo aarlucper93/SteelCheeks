@@ -1,4 +1,4 @@
-package com.example.steelcheeks.data.database
+package com.example.steelcheeks.data.database.food
 
 import androidx.room.Dao
 import androidx.room.Delete

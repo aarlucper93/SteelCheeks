@@ -1,4 +1,4 @@
-package com.example.steelcheeks.ui
+package com.example.steelcheeks.ui.food
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -8,30 +8,39 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.steelcheeks.data.FoodRepository
-import com.example.steelcheeks.data.database.FoodEntity
+import com.example.steelcheeks.data.database.food.FoodEntity
 import com.example.steelcheeks.data.database.FoodRoomDatabase
-import com.example.steelcheeks.data.network.Food
-import com.example.steelcheeks.data.network.FoodList
-import com.example.steelcheeks.data.network.Nutriments
+import com.example.steelcheeks.data.network.OpenFoodFactsResponse
+import com.example.steelcheeks.domain.Food
+import com.example.steelcheeks.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 
-enum class FoodsApiStatus { LOADING, ERROR, DONE }
+enum class LoadingStatus { READY, LOADING, ERROR, DONE }
 
 class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
 
-    val localFoodList: LiveData<List<FoodEntity>> =
-        repository.getLocalFoodList().asLiveData()
+    val localFoodList: LiveData<List<FoodEntity>> = repository.getLocalFoodList().asLiveData()
+
+    private val _foodItems = MutableLiveData<List<Food>>(localFoodList.value?.map { repository.toDomainModel(it) })
+    val foodItems: LiveData<List<Food>> = _foodItems
+
+    private val _searchQuery = MutableLiveData<String>()
+    val searchQuery: LiveData<String> get() = _searchQuery
+
+    init {
+        _searchQuery.value = ""
+    }
 
     private val _filteredLocalFoodList = MutableLiveData<List<FoodEntity>>()
     val filteredLocalFoodList: LiveData<List<FoodEntity>> = _filteredLocalFoodList
 
     //Status of the most recent request
-    private val _status = MutableLiveData<FoodsApiStatus>()
-    val status: LiveData<FoodsApiStatus> = _status
+    private val _status = MutableLiveData<LoadingStatus>()
+    val status: LiveData<LoadingStatus> = _status
 
     //List of products returned by the request
-    private val _products = MutableLiveData<FoodList>()
-    val products: LiveData<FoodList> = _products
+    private val _products = MutableLiveData<OpenFoodFactsResponse>()
+    val products: LiveData<OpenFoodFactsResponse> = _products
 
     //The Food returned by the request -- OLD
     private val _food = MutableLiveData<Food>(null)
@@ -40,27 +49,39 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
     private val _result = MutableLiveData<Long>(-1L)
     val result: LiveData<Long> = _result
 
+    private val _snackbarMessage = SingleLiveEvent<String>()
+    val snackbarMessage: LiveData<String> = _snackbarMessage
+
+    private val _remoteListMode = MutableLiveData<Boolean>(false)
+    val remoteListMode: LiveData<Boolean> = _remoteListMode
+
     var isLocalLoad: Boolean = false
+
 
     //Nutriments of the food returned by the request
     /*val kcal: LiveData<Double?> = food.map { it.product.nutriments.energyKcal }
     val carbohydrates: LiveData<Double?> = food.map {it.product.nutriments.carbohydrates }
     val proteins: LiveData<Double?> = food.map { it.product.nutriments.proteins }*/
 
+    fun setSearchQuery(query: String) {
+        _searchQuery.value = query
+    }
+
     //Launches a coroutine that uses the Foods Api Retrofit Service to get a Food entry
     fun getFoodEntries(searchTerms: String) {
         viewModelScope.launch {
-            _status.value = FoodsApiStatus.LOADING
+            _status.value = LoadingStatus.LOADING
             try {
                 val response = repository.getFoodList(searchTerms)
                 response?.let {
                     if (response.isSuccessful) {
-                        _products.value = response.body()
-                        _products.value?.let {
+                        val responseBody = response.body()
+                        responseBody?.let {
                             if (it.count > 0) {                 // Products found
-                                _status.value = FoodsApiStatus.DONE
+                                _status.value = LoadingStatus.DONE
+                                _foodItems.value = it.products.map { product -> repository.toDomainModel(product) }
                             } else {                            // No products found
-                                _status.value = FoodsApiStatus.ERROR
+                                _status.value = LoadingStatus.ERROR
                             }
                         }
                     }
@@ -69,9 +90,16 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
                     throw Exception("Response returned null")
                 }
             } catch (e: Exception) {
-                _status.value = FoodsApiStatus.ERROR
+                _status.value = LoadingStatus.ERROR
                 Log.e("FoodsViewModel", "Error fetching data: ${e.message}", e)
             }
+        }
+    }
+
+    fun setListToLocalFoodItems() {
+        viewModelScope.launch {
+            _foodItems.value = localFoodList.value?.map {repository.toDomainModel(it)}
+            Log.d("FoodsViewModel", "${_foodItems.value}")
         }
     }
 
@@ -82,40 +110,27 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
             val filteredList = localFoodList.value?.filter {
                 it.productName.contains(query, true) || it.productBrands!!.contains(query, true)        //TODO: Control for nullable productBrands
             } ?: emptyList()
-            _filteredLocalFoodList.value = filteredList
+            _foodItems.value = filteredList.map { repository.toDomainModel(it) }
         }
     }
 
     fun setFoodItemByBarcode(barcode: String) {
-        if (isLocalLoad) {
-            //Map selected local food item to Food Livedata
-            val foodEntity = localFoodList.value?.filter { it.code == barcode }?.get(0)
-            foodEntity?.let {
-                _food.value = Food (
-                    code = foodEntity.code,
-                    productName = foodEntity.productName,
-                    productBrands = foodEntity.productBrands,
-                    imageUrl = foodEntity.imageUrl,
-                    productQuantityUnit = foodEntity.productQuantityUnit,
-                    nutriments = Nutriments(
-                        energyKcal = foodEntity.energyKcal,
-                        carbohydrates = foodEntity.carbohydrates,
-                        proteins = foodEntity.proteins,
-                        fat = foodEntity.fat
-                    )
-                )
-            }
-        }
-        else {
-            _food.value = _products.value?.products?.filter { it.code == barcode }?.get(0)
-        }
+        _food.value = _foodItems.value?.filter { it.code == barcode }?.get(0)
     }
 
     fun insertFoodToLocalDatabase(food: LiveData<Food>) {
         viewModelScope.launch {
             _result.value = repository.insertFood(food.value!!)
+            if (result.value != -1L) {
+                _snackbarMessage.value = "Food saved to the local database"
+            }
         }
     }
+
+    fun setLoadingStatusAsReady() {
+        _status.value = LoadingStatus.READY
+    }
+
 }
 
 //Allows passing the database as a parameter when initializing the viewModel.
