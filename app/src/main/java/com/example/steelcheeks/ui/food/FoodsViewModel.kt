@@ -10,12 +10,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.steelcheeks.data.FoodRepository
 import com.example.steelcheeks.data.database.food.FoodEntity
 import com.example.steelcheeks.data.database.FoodRoomDatabase
-import com.example.steelcheeks.data.network.Product
 import com.example.steelcheeks.data.network.OpenFoodFactsResponse
-import com.example.steelcheeks.data.network.Nutriments
 import com.example.steelcheeks.domain.Food
 import com.example.steelcheeks.utils.SingleLiveEvent
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 enum class LoadingStatus { READY, LOADING, ERROR, DONE }
@@ -26,6 +23,13 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
 
     private val _foodItems = MutableLiveData<List<Food>>(localFoodList.value?.map { repository.toDomainModel(it) })
     val foodItems: LiveData<List<Food>> = _foodItems
+
+    private val _searchQuery = MutableLiveData<String>()
+    val searchQuery: LiveData<String> get() = _searchQuery
+
+    init {
+        _searchQuery.value = ""
+    }
 
     private val _filteredLocalFoodList = MutableLiveData<List<FoodEntity>>()
     val filteredLocalFoodList: LiveData<List<FoodEntity>> = _filteredLocalFoodList
@@ -59,6 +63,10 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
     val carbohydrates: LiveData<Double?> = food.map {it.product.nutriments.carbohydrates }
     val proteins: LiveData<Double?> = food.map { it.product.nutriments.proteins }*/
 
+    fun setSearchQuery(query: String) {
+        _searchQuery.value = query
+    }
+
     //Launches a coroutine that uses the Foods Api Retrofit Service to get a Food entry
     fun getFoodEntries(searchTerms: String) {
         viewModelScope.launch {
@@ -88,7 +96,7 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
         }
     }
 
-    fun getLocalFoodEntries() {
+    fun setListToLocalFoodItems() {
         viewModelScope.launch {
             _foodItems.value = localFoodList.value?.map {repository.toDomainModel(it)}
             Log.d("FoodsViewModel", "${_foodItems.value}")
@@ -102,7 +110,7 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
             val filteredList = localFoodList.value?.filter {
                 it.productName.contains(query, true) || it.productBrands!!.contains(query, true)        //TODO: Control for nullable productBrands
             } ?: emptyList()
-            _filteredLocalFoodList.value = filteredList
+            _foodItems.value = filteredList.map { repository.toDomainModel(it) }
         }
     }
 
