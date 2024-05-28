@@ -25,4 +25,5 @@
     <string name="diary_total_carbs">Carbs</string>
     <string name="diary_total_protein">Protein</string>
     <string name="diary_total_fat">Fat</string>
+    <string name="scan_barcode">Scan barcode</string>
 </resources>

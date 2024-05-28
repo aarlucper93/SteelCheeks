@@ -21,6 +21,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.steelcheeks.R
 import com.example.steelcheeks.SteelCheeksApplication
 import com.example.steelcheeks.databinding.FragmentFoodListBinding
+import com.google.android.material.snackbar.Snackbar
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 
 class FoodListFragment : Fragment(), MenuProvider {
 
@@ -124,11 +127,6 @@ class FoodListFragment : Fragment(), MenuProvider {
         })
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null // Added to prevent memory leaks
-    }
-
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.food_list_menu, menu)
     }
@@ -136,10 +134,30 @@ class FoodListFragment : Fragment(), MenuProvider {
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         return when (menuItem.itemId) {
             R.id.scan_barcode -> {
-                //do something
+                startBarcodeScanner()
                 true
             }
             else -> false
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // Added to prevent memory leaks
+    }
+
+    private fun startBarcodeScanner() {
+        val options = ScanOptions()
+        options.setPrompt("Scan a barcode")
+        options.setBeepEnabled(true)
+        options.setBarcodeImageEnabled(true)
+        barcodeLauncher.launch(options)
+    }
+
+    private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
+        if (result.contents != null) {
+            // Handle the scanned barcode, for example by showing it in a Toast or updating a ViewModel
+            Snackbar.make(requireView(), result.contents.toString(), Snackbar.LENGTH_SHORT).show()
         }
     }
 }
