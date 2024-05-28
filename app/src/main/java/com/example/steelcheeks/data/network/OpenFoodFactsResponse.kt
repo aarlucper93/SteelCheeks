@@ -7,6 +7,10 @@ data class OpenFoodFactsResponse (
     val count: Int
 )
 
+data class SingleProductOffResponse (
+    val product: Product
+)
+
 data class Product (
     val code: String,
     @Json(name = "product_name") val productName: String,

@@ -96,6 +96,33 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
         }
     }
 
+    fun getFoodByBarcode(barcode: String) {
+        viewModelScope.launch {
+            _status.value = LoadingStatus.LOADING
+            try {
+                val response = repository.getProductByBarcode(barcode)
+                if (response?.isSuccessful == true) {
+                    Log.d("response", "All good")
+                    Log.d("response", "$response")
+                    //TODO: Handle response
+                    /*val product = response.body()?.product
+                    if (product != null) {
+                        _food.value = repository.toDomainModel(product)
+                        _status.value = LoadingStatus.DONE
+                    } else {
+                        _status.value = LoadingStatus.ERROR
+                    }*/
+                } else {
+                    Log.d("response", "$response")
+                    _status.value = LoadingStatus.ERROR
+                }
+            } catch (e: Exception) {
+                _status.value = LoadingStatus.ERROR
+                Log.e("FoodsViewModel", "Error fetching data: ${e.message}", e)
+            }
+        }
+    }
+
     fun setListToLocalFoodItems() {
         viewModelScope.launch {
             _foodItems.value = localFoodList.value?.map {repository.toDomainModel(it)}

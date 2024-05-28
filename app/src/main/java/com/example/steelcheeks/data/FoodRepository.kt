@@ -7,7 +7,9 @@ import com.example.steelcheeks.data.database.food.FoodEntity
 import com.example.steelcheeks.data.database.FoodRoomDatabase
 import com.example.steelcheeks.data.network.Product
 import com.example.steelcheeks.data.network.OpenFoodFactsResponse
-import com.example.steelcheeks.data.network.FoodsApi
+import com.example.steelcheeks.data.network.FoodSearchApi
+import com.example.steelcheeks.data.network.SingleFoodApi
+import com.example.steelcheeks.data.network.SingleProductOffResponse
 import com.example.steelcheeks.domain.Food
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -41,7 +43,18 @@ class FoodRepository(private val database: FoodRoomDatabase) {
     suspend fun getFoodList(searchTerms: String): Response<OpenFoodFactsResponse>? {
         return withContext(Dispatchers.IO) {
             try {
-                FoodsApi.retrofitService.getFoodList(searchTerms)
+                FoodSearchApi.retrofitService.getFoodList(searchTerms)
+            } catch (e: Exception) {
+                Log.e("FoodRepository", "Error fetching data: ${e.message}", e)
+                null
+            }
+        }
+    }
+
+    suspend fun getProductByBarcode(barcode: String): Response<SingleProductOffResponse>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                SingleFoodApi.retrofitService.getProductByBarcode(barcode)
             } catch (e: Exception) {
                 Log.e("FoodRepository", "Error fetching data: ${e.message}", e)
                 null

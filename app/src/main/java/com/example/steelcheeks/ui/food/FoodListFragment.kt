@@ -156,8 +156,9 @@ class FoodListFragment : Fragment(), MenuProvider {
 
     private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
         if (result.contents != null) {
-            // Handle the scanned barcode, for example by showing it in a Toast or updating a ViewModel
-            Snackbar.make(requireView(), result.contents.toString(), Snackbar.LENGTH_SHORT).show()
+            val barcode = result.contents.toString()
+            viewModel.getFoodByBarcode(barcode)
+            viewModel.setLoadingStatusAsReady()     // Reset loading status
         }
     }
 }
