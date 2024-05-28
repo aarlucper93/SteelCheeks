@@ -5,17 +5,24 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.steelcheeks.R
 import com.example.steelcheeks.SteelCheeksApplication
 import com.example.steelcheeks.databinding.FragmentFoodListBinding
 
-class FoodListFragment : Fragment() {
+class FoodListFragment : Fragment(), MenuProvider {
 
     private val viewModel: FoodsViewModel by activityViewModels {
         FoodsViewModelFactory (
@@ -25,10 +32,14 @@ class FoodListFragment : Fragment() {
     private var _binding: FragmentFoodListBinding? = null
     private val binding get() = _binding!!
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
         _binding = FragmentFoodListBinding.inflate(inflater)
         return binding.root
     }
@@ -116,5 +127,19 @@ class FoodListFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null // Added to prevent memory leaks
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.food_list_menu, menu)
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        return when (menuItem.itemId) {
+            R.id.scan_barcode -> {
+                //do something
+                true
+            }
+            else -> false
+        }
     }
 }
