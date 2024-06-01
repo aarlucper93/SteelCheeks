@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.steelcheeks.R
 import com.example.steelcheeks.SteelCheeksApplication
 import com.example.steelcheeks.databinding.FragmentFoodListBinding
-import com.google.android.material.snackbar.Snackbar
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 
@@ -143,7 +142,7 @@ class FoodListFragment : Fragment(), MenuProvider {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null // Added to prevent memory leaks
+        _binding = null
     }
 
     private fun startBarcodeScanner() {
@@ -157,8 +156,17 @@ class FoodListFragment : Fragment(), MenuProvider {
     private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
         if (result.contents != null) {
             val barcode = result.contents.toString()
-            viewModel.getFoodByBarcode(barcode)
+            viewModel.getFoodByBarcode(barcode) {barcode ->
+                navigateToDetailScreen(barcode)
+            }
             viewModel.setLoadingStatusAsReady()     // Reset loading status
+
         }
+    }
+
+    private fun navigateToDetailScreen(barcode: String) {
+        val action =
+            FoodListFragmentDirections.actionFoodListFragmentToFoodDetailFragment(barcode)
+        findNavController().navigate(action)
     }
 }

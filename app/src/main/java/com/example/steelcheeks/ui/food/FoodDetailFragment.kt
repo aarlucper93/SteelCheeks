@@ -50,7 +50,10 @@ class FoodDetailFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.setFoodItemByBarcode(args.barcode)
+
+        if (viewModel.itemWasScanned.value == false) {
+            viewModel.setFoodItemByBarcode(args.barcode)
+        }
         binding.apply {
             tvBarcodeValue.text = viewModel.food.value?.code
             tvNameValue.text = viewModel.food.value?.productName
@@ -69,6 +72,7 @@ class FoodDetailFragment : Fragment() {
                 .load(viewModel.food.value?.imageUrl)
                 .into(foodDetailImage)
         }
+        viewModel.setScannedItemAsLoaded()
 
         viewModel.snackbarMessage.observe(viewLifecycleOwner) { message ->
             Snackbar.make(

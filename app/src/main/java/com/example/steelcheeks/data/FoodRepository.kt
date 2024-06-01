@@ -23,8 +23,8 @@ class FoodRepository(private val database: FoodRoomDatabase) {
     suspend fun insertFood(food: Food): Long {
         val foodEntity = FoodEntity(
             food.code,
+            food.productName ?: "No name specified",
             food.productBrands ?: "No brand specified",
-            food.productName,
             food.imageUrl,
             food.productQuantity,
             food.productQuantityUnit,

@@ -57,6 +57,9 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
 
     var isLocalLoad: Boolean = false
 
+    private val _itemWasScanned = MutableLiveData<Boolean>(false)
+    val itemWasScanned: LiveData<Boolean> = _itemWasScanned
+
 
     //Nutriments of the food returned by the request
     /*val kcal: LiveData<Double?> = food.map { it.product.nutriments.energyKcal }
@@ -78,8 +81,9 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
                         val responseBody = response.body()
                         responseBody?.let {
                             if (it.count > 0) {                 // Products found
-                                _status.value = LoadingStatus.DONE
+                                _itemWasScanned.value = false
                                 _foodItems.value = it.products.map { product -> repository.toDomainModel(product) }
+                                _status.value = LoadingStatus.DONE
                             } else {                            // No products found
                                 _status.value = LoadingStatus.ERROR
                             }
@@ -96,7 +100,7 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
         }
     }
 
-    fun getFoodByBarcode(barcode: String) {
+    fun getFoodByBarcode(barcode: String, callback: (String) -> Unit) {
         viewModelScope.launch {
             _status.value = LoadingStatus.LOADING
             try {
@@ -105,13 +109,16 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
                     Log.d("response", "All good")
                     Log.d("response", "$response")
                     //TODO: Handle response
-                    /*val product = response.body()?.product
+                    val product = response.body()?.product
                     if (product != null) {
                         _food.value = repository.toDomainModel(product)
+                        Log.d("Mapped food: ", "${food.value}")
+                        _itemWasScanned.value = true
+                        callback.invoke(barcode)
                         _status.value = LoadingStatus.DONE
                     } else {
                         _status.value = LoadingStatus.ERROR
-                    }*/
+                    }
                 } else {
                     Log.d("response", "$response")
                     _status.value = LoadingStatus.ERROR
@@ -143,6 +150,10 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
 
     fun setFoodItemByBarcode(barcode: String) {
         _food.value = _foodItems.value?.filter { it.code == barcode }?.get(0)
+    }
+
+    fun setScannedItemAsLoaded() {
+        _itemWasScanned.value = false
     }
 
     fun insertFoodToLocalDatabase(food: LiveData<Food>) {
