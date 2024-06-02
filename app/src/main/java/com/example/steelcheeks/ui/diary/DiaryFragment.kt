@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.steelcheeks.SteelCheeksApplication
 import com.example.steelcheeks.data.database.diary.DiaryEntryEntity
 import com.example.steelcheeks.databinding.FragmentDiaryBinding
@@ -42,6 +44,13 @@ class DiaryFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.recyclerView.adapter = diaryAdapter
+
+        binding.recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                context,
+                LinearLayoutManager.VERTICAL
+            )
+        )
 
         viewModel.diaryEntries.observe(viewLifecycleOwner) {entries ->
             entries?.let {

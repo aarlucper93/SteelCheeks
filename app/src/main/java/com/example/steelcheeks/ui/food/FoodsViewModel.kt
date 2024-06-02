@@ -105,13 +105,9 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
             try {
                 val response = repository.getProductByBarcode(barcode)
                 if (response?.isSuccessful == true) {
-                    Log.d("response", "All good")
-                    Log.d("response", "$response")
-                    //TODO: Handle response
                     val product = response.body()?.product
                     if (product != null) {
                         _food.value = repository.toDomainModel(product)
-                        Log.d("Mapped food: ", "${food.value}")
                         _itemWasScanned.value = true
                         callback.invoke(barcode)
                         _status.value = LoadingStatus.DONE
@@ -119,7 +115,6 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
                         _status.value = LoadingStatus.ERROR
                     }
                 } else {
-                    Log.d("response", "$response")
                     _status.value = LoadingStatus.ERROR
                 }
             } catch (e: Exception) {

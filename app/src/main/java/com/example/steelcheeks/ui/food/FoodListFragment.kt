@@ -51,14 +51,14 @@ class FoodListFragment : Fragment(), MenuProvider {
 
         viewModel.setLoadingStatusAsReady()
 
-        // The lifecycle of the LiveData bound to the layout is that of the Fragment's
-        binding.lifecycleOwner = viewLifecycleOwner
-
         val adapter = FoodListAdapter {
             val action =
                 FoodListFragmentDirections.actionFoodListFragmentToFoodDetailFragment(it.code)
             findNavController().navigate(action)
         }
+
+        // The lifecycle of the LiveData bound to the layout is that of the Fragment's
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.recyclerView.addItemDecoration(
             DividerItemDecoration(
                 context,
