@@ -21,7 +21,8 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
 
     val localFoodList: LiveData<List<FoodEntity>> = repository.getLocalFoodList().asLiveData()
 
-    private val _foodItems = MutableLiveData<List<Food>>(localFoodList.value?.map { repository.toDomainModel(it) })
+    //private val _foodItems = MutableLiveData<List<Food>>(localFoodList.value?.map { repository.toDomainModel(it) })
+    private val _foodItems = MutableLiveData<List<Food>>(listOf())
     val foodItems: LiveData<List<Food>> = _foodItems
 
     private val _searchQuery = MutableLiveData<String>()
@@ -54,8 +55,6 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
 
     private val _remoteListMode = MutableLiveData<Boolean>(false)
     val remoteListMode: LiveData<Boolean> = _remoteListMode
-
-    var isLocalLoad: Boolean = false
 
     private val _itemWasScanned = MutableLiveData<Boolean>(false)
     val itemWasScanned: LiveData<Boolean> = _itemWasScanned
@@ -141,10 +140,12 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
         if (query.isBlank()) {
             _filteredLocalFoodList.value = localFoodList.value
         } else {
-            val filteredList = localFoodList.value?.filter {
-                it.productName.contains(query, true) || it.productBrands!!.contains(query, true)        //TODO: Control for nullable productBrands
-            } ?: emptyList()
-            _foodItems.value = filteredList.map { repository.toDomainModel(it) }
+            viewModelScope.launch {
+                val filteredList = localFoodList.value?.filter {
+                    it.productName.contains(query, true) || it.productBrands!!.contains(query, true)        //TODO: Control for nullable productBrands
+                } ?: emptyList()
+                _foodItems.value = filteredList.map { repository.toDomainModel(it) }
+            }
         }
     }
 
@@ -167,6 +168,10 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
 
     fun setLoadingStatusAsReady() {
         _status.value = LoadingStatus.READY
+    }
+
+    fun setRemoteListMode(isRemoteList: Boolean) {
+        _remoteListMode.value = isRemoteList
     }
 
 }

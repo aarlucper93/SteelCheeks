@@ -21,19 +21,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.steelcheeks.R
 import com.example.steelcheeks.SteelCheeksApplication
 import com.example.steelcheeks.databinding.FragmentFoodListBinding
+import com.google.android.material.snackbar.Snackbar
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 
 class FoodListFragment : Fragment(), MenuProvider {
 
     private val viewModel: FoodsViewModel by activityViewModels {
-        FoodsViewModelFactory (
+        FoodsViewModelFactory(
             (activity?.application as SteelCheeksApplication).database
         )
     }
     private var _binding: FragmentFoodListBinding? = null
     private val binding get() = _binding!!
-
 
 
     override fun onCreateView(
@@ -51,16 +51,20 @@ class FoodListFragment : Fragment(), MenuProvider {
 
         viewModel.setLoadingStatusAsReady()
 
+        // The lifecycle of the LiveData bound to the layout is that of the Fragment's
+        binding.lifecycleOwner = viewLifecycleOwner
+
         val adapter = FoodListAdapter {
             val action =
                 FoodListFragmentDirections.actionFoodListFragmentToFoodDetailFragment(it.code)
             findNavController().navigate(action)
         }
-
-        // The lifecycle of the LiveData bound to the layout is that of the Fragment's
-        binding.lifecycleOwner = viewLifecycleOwner
-
-        binding.recyclerView.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
+        binding.recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                context,
+                LinearLayoutManager.VERTICAL
+            )
+        )
         binding.recyclerView.adapter = adapter
         // Gives the binding access to the FoodsViewModel
         binding.viewModel = viewModel
@@ -78,16 +82,18 @@ class FoodListFragment : Fragment(), MenuProvider {
             }
         } */
 
-        viewModel.foodItems.observe(viewLifecycleOwner) {foodList ->
+        viewModel.foodItems.observe(viewLifecycleOwner) { foodList ->
             foodList?.let {
                 adapter.submitList(foodList)
             }
         }
 
-        viewModel.localFoodList.observe(viewLifecycleOwner) {localFoodList ->
-            localFoodList?.let {
-                viewModel.setListToLocalFoodItems()
-                adapter.submitList(viewModel.foodItems.value)
+        viewModel.localFoodList.observe(viewLifecycleOwner) { localFoodList ->
+            if (viewModel.remoteListMode.value == false) {
+                localFoodList?.let {
+                    viewModel.setListToLocalFoodItems()
+                    //adapter.submitList(viewModel.foodItems.value)
+                }
             }
         }
 
@@ -106,6 +112,7 @@ class FoodListFragment : Fragment(), MenuProvider {
                 val searchText = searchEditText.text.toString()
                 viewModel.setSearchQuery(searchText)
                 viewModel.getFoodEntries(searchText)
+                viewModel.setRemoteListMode(true)
                 return@setOnEditorActionListener true
             }
             false
@@ -117,11 +124,15 @@ class FoodListFragment : Fragment(), MenuProvider {
                 val searchText = s.toString()
                 viewModel.setSearchQuery(searchText)
                 if (searchText.isNotBlank()) {
-                    viewModel.filterLocalFoodList(searchText)
+                    if (viewModel.remoteListMode.value == false) {
+                        viewModel.filterLocalFoodList(searchText)
+                    }
                 } else {
-                    viewModel.filterLocalFoodList("")
+                    viewModel.setRemoteListMode(false)
+                    viewModel.setListToLocalFoodItems()
                 }
             }
+
             override fun afterTextChanged(s: Editable?) {}
         })
     }
@@ -136,6 +147,7 @@ class FoodListFragment : Fragment(), MenuProvider {
                 startBarcodeScanner()
                 true
             }
+
             else -> false
         }
     }
@@ -156,11 +168,16 @@ class FoodListFragment : Fragment(), MenuProvider {
     private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
         if (result.contents != null) {
             val barcode = result.contents.toString()
-            viewModel.getFoodByBarcode(barcode) {barcode ->
-                navigateToDetailScreen(barcode)
+            viewModel.getFoodByBarcode(barcode) {
+                navigateToDetailScreen(it)
             }
             viewModel.setLoadingStatusAsReady()     // Reset loading status
-
+        } else {
+            Snackbar.make(
+                requireView(),
+                "No product found with this barcode",
+                Snackbar.LENGTH_SHORT
+            ).show()
         }
     }
 
