@@ -40,6 +40,17 @@ class FoodRepository(private val database: FoodRoomDatabase) {
         return result
     }
 
+    private lateinit var resultList : List<Long>
+    suspend fun insertFoodList(foodList: List<Food>): List<Long> {
+        val foodListEntity = foodList.map {toEntityModel(it)
+        }
+        withContext(Dispatchers.IO) {
+            resultList = database.foodDao().insertAll(foodListEntity)
+        }
+
+        return resultList
+    }
+
     suspend fun getFoodList(searchTerms: String): Response<OpenFoodFactsResponse>? {
         return withContext(Dispatchers.IO) {
             try {
@@ -111,6 +122,20 @@ class FoodRepository(private val database: FoodRoomDatabase) {
             proteins = foodEntity.proteins,
             fat = foodEntity.fat,
             isFromLocal = true
+        )
+    }
+
+    fun toEntityModel(food: Food) : FoodEntity{
+        return FoodEntity(
+            code = food.code,
+            productName = food.productName,
+            productBrands = food.productBrands,
+            imageUrl = food.imageUrl,
+            productQuantityUnit = food.productQuantityUnit,
+            energyKcal = food.energyKcal,
+            carbohydrates = food.carbohydrates,
+            proteins = food.proteins,
+            fat = food.fat,
         )
     }
 

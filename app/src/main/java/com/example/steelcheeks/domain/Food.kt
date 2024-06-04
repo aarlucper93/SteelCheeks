@@ -11,7 +11,8 @@ data class Food (
     val carbohydrates: Double?,
     val proteins: Double?,
     val fat: Double?,
-    val isFromLocal: Boolean
+    val isFromLocal: Boolean,
+    var isSelected: Boolean = false
 )
 
 

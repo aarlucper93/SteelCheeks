@@ -59,6 +59,12 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
     private val _itemWasScanned = MutableLiveData<Boolean>(false)
     val itemWasScanned: LiveData<Boolean> = _itemWasScanned
 
+    private val _selectedItems = MutableLiveData<List<Food>>(listOf())
+    val selectedItems: LiveData<List<Food>> get() = _selectedItems
+
+    private val _selectedCount = MutableLiveData<Int>(0)
+    val selectedCount: LiveData<Int> get() = _selectedCount
+
 
     //Nutriments of the food returned by the request
     /*val kcal: LiveData<Double?> = food.map { it.product.nutriments.energyKcal }
@@ -161,12 +167,42 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
         }
     }
 
+    fun insertFoodListToLocalDatabase() {
+        viewModelScope.launch {
+            val result = _selectedItems.value?.let { repository.insertFoodList(it) }
+            result?.let {
+                if (result.contains(-1L)) {
+                    _snackbarMessage.value = "An error occurred"
+                } else {
+                    _snackbarMessage.value = "Foods saved to the local database"
+                }
+            }
+
+        }
+    }
+
     fun setLoadingStatusAsReady() {
         _status.value = LoadingStatus.READY
     }
 
     fun setRemoteListMode(isRemoteList: Boolean) {
         _remoteListMode.value = isRemoteList
+    }
+
+    fun toggleItemSelected(food: Food, isSelected: Boolean) {
+        val currentList = _selectedItems.value?.toMutableList() ?: mutableListOf()
+        if (isSelected) {
+            currentList.add(food)
+        } else {
+            currentList.remove(food)
+        }
+        _selectedItems.value = currentList
+        _selectedCount.value = currentList.size
+    }
+
+    fun clearSelectedItems() {
+        _selectedItems.value = listOf()
+        _selectedCount.value = 0
     }
 
 }

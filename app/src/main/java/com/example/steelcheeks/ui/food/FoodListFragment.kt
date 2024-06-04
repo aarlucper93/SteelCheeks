@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
@@ -51,11 +52,16 @@ class FoodListFragment : Fragment(), MenuProvider {
 
         viewModel.setLoadingStatusAsReady()
 
-        val adapter = FoodListAdapter {
-            val action =
-                FoodListFragmentDirections.actionFoodListFragmentToFoodDetailFragment(it.code)
-            findNavController().navigate(action)
-        }
+        val adapter = FoodListAdapter (
+            {food -> val action =
+                FoodListFragmentDirections.actionFoodListFragmentToFoodDetailFragment(food.code)
+                findNavController().navigate(action)
+            },
+            { food, isSelected ->
+                viewModel.toggleItemSelected(food, isSelected)
+            }
+
+        )
 
         // The lifecycle of the LiveData bound to the layout is that of the Fragment's
         binding.lifecycleOwner = viewLifecycleOwner
@@ -95,6 +101,23 @@ class FoodListFragment : Fragment(), MenuProvider {
                     //adapter.submitList(viewModel.foodItems.value)
                 }
             }
+        }
+
+        viewModel.snackbarMessage.observe(viewLifecycleOwner) { message ->
+            Snackbar.make(
+                requireView(),
+                message,
+                Snackbar.LENGTH_SHORT
+            ).show()
+        }
+
+        viewModel.selectedItems.observe(viewLifecycleOwner) {
+            // Update action bar with the count and check icon if necessary
+            activity?.invalidateOptionsMenu()
+        }
+
+        viewModel.remoteListMode.observe(viewLifecycleOwner) {
+            viewModel.clearSelectedItems()
         }
 
 
@@ -137,8 +160,28 @@ class FoodListFragment : Fragment(), MenuProvider {
         })
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        viewModel.clearSelectedItems()
+    }
+
+
+    /* Menú de la barra superior */
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.food_list_menu, menu)
+    }
+
+    override fun onPrepareMenu(menu: Menu) {
+        super.onPrepareMenu(menu)
+        val count = viewModel.selectedCount.value ?: 0
+        val menuItem = menu.findItem(R.id.action_selected_count)
+
+        if (viewModel.remoteListMode.value == true) {
+            menuItem.icon = ContextCompat.getDrawable( requireContext(), R.drawable.ic_save_24)
+        }
+        menuItem.title = count.toString()
+        menuItem.isVisible = count > 0
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -147,14 +190,13 @@ class FoodListFragment : Fragment(), MenuProvider {
                 startBarcodeScanner()
                 true
             }
+            R.id.action_selected_count -> {
+                viewModel.insertFoodListToLocalDatabase()
+                true
+            }
 
             else -> false
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun startBarcodeScanner() {
