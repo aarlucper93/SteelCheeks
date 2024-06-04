@@ -27,11 +27,12 @@ class FoodDetailFragment : Fragment() {
     private var _binding: FragmentFoodDetailBinding? = null
     private val binding get() = _binding!!
     private val args: FoodDetailFragmentArgs by navArgs()
-    private val viewModel: FoodsViewModel by activityViewModels {
+    private val viewModel: FoodsViewModel by activityViewModels()
+    /*private val viewModel: FoodsViewModel by activityViewModels {
         FoodsViewModelFactory (
             (activity?.application as SteelCheeksApplication).database
         )
-    }
+    }*/
 
     private val diaryViewModel: DiaryViewModel by activityViewModels {
         DiaryViewModelFactory(

@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.steelcheeks.data.FoodRepository
 import com.example.steelcheeks.data.database.food.FoodEntity
@@ -13,15 +12,15 @@ import com.example.steelcheeks.data.database.FoodRoomDatabase
 import com.example.steelcheeks.data.network.OpenFoodFactsResponse
 import com.example.steelcheeks.domain.Food
 import com.example.steelcheeks.utils.SingleLiveEvent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 enum class LoadingStatus { READY, LOADING, ERROR, DONE }
 
 class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
 
-    val localFoodList: LiveData<List<FoodEntity>> = repository.getLocalFoodList().asLiveData()
-
-    //private val _foodItems = MutableLiveData<List<Food>>(localFoodList.value?.map { repository.toDomainModel(it) })
     private val _foodItems = MutableLiveData<List<Food>>(listOf())
     val foodItems: LiveData<List<Food>> = _foodItems
 
@@ -64,6 +63,10 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
 
     private val _selectedCount = MutableLiveData<Int>(0)
     val selectedCount: LiveData<Int> get() = _selectedCount
+
+    init {
+        fetchLocalFoodItems()
+    }
 
 
     //Nutriments of the food returned by the request
@@ -132,19 +135,33 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
 
     fun setListToLocalFoodItems() {
         viewModelScope.launch {
-            _foodItems.value = localFoodList.value?.map {repository.toDomainModel(it)}
-            Log.d("FoodsViewModel", "${_foodItems.value}")
+            val foodEntities = withContext(Dispatchers.IO) {
+                repository.getLocalFoodList().first()
+            }
+            _foodItems.value = foodEntities.map { repository.toDomainModel(it) }
+        }
+    }
+
+    private fun fetchLocalFoodItems() {
+        viewModelScope.launch {
+            val foodEntities = repository.getLocalFoodList().first()
+            _foodItems.value = foodEntities.map { repository.toDomainModel(it) }
         }
     }
 
     fun filterLocalFoodList(query: String) {
         if (query.isBlank()) {
-            _filteredLocalFoodList.value = localFoodList.value
+            fetchLocalFoodItems()
         } else {
             viewModelScope.launch {
-                val filteredList = localFoodList.value?.filter {
-                    it.productName.contains(query, true) || it.productBrands!!.contains(query, true)        //TODO: Control for nullable productBrands
-                } ?: emptyList()
+                val filteredList = withContext(Dispatchers.IO) {
+                    repository.getLocalFoodList().first().filter {
+                        it.productName.contains(query, true) || it.productBrands!!.contains(
+                            query,
+                            true
+                        )
+                    }
+                }
                 _foodItems.value = filteredList.map { repository.toDomainModel(it) }
             }
         }
