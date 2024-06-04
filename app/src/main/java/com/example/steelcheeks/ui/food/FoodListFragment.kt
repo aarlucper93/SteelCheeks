@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -99,14 +100,14 @@ class FoodListFragment : Fragment(), MenuProvider {
             }
         }
 
-        viewModel.localFoodList.observe(viewLifecycleOwner) { localFoodList ->
+        /*viewModel.localFoodList.observe(viewLifecycleOwner) { localFoodList ->
             if (viewModel.remoteListMode.value == false) {
                 localFoodList?.let {
                     viewModel.setListToLocalFoodItems()
                     //adapter.submitList(viewModel.foodItems.value)
                 }
             }
-        }
+        }*/
 
         viewModel.snackbarMessage.observe(viewLifecycleOwner) { message ->
             Snackbar.make(
