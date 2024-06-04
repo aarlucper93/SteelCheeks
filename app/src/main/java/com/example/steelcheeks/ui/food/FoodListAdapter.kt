@@ -44,6 +44,7 @@ class FoodListAdapter(
                 productAmount.text = "${food.productQuantity}${food.productQuantityUnit} : "     //TODO P1: Quitar el hardcodeo
                 productEnergy.text = "${food.energyKcal.toString()} kcal"
 
+                checkbox.setOnCheckedChangeListener(null)
                 checkbox.isChecked = food.isSelected
                 checkbox.setOnCheckedChangeListener { _, isChecked ->
                     onItemCheckedChanged(food, isChecked)

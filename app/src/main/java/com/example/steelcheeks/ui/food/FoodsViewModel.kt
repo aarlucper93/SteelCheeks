@@ -197,6 +197,7 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
     }
 
     fun toggleItemSelected(food: Food, isSelected: Boolean) {
+        food.isSelected = isSelected
         val currentList = _selectedItems.value?.toMutableList() ?: mutableListOf()
         if (isSelected) {
             currentList.add(food)
