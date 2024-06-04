@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -21,10 +22,14 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.steelcheeks.R
 import com.example.steelcheeks.SteelCheeksApplication
+import com.example.steelcheeks.data.database.diary.DiaryEntryEntity
 import com.example.steelcheeks.databinding.FragmentFoodListBinding
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
+import org.threeten.bp.LocalDate
 
 class FoodListFragment : Fragment(), MenuProvider {
 
@@ -191,8 +196,13 @@ class FoodListFragment : Fragment(), MenuProvider {
                 true
             }
             R.id.action_selected_count -> {
-                viewModel.insertFoodListToLocalDatabase()
-                true
+                if (viewModel.remoteListMode.value == false) {
+                    showConfirmationDialogForSelectedItems()
+                    true
+                } else {
+                    viewModel.insertFoodListToLocalDatabase()
+                    true
+                }
             }
 
             else -> false
@@ -227,5 +237,43 @@ class FoodListFragment : Fragment(), MenuProvider {
         val action =
             FoodListFragmentDirections.actionFoodListFragmentToFoodDetailFragment(barcode)
         findNavController().navigate(action)
+    }
+
+    private fun showConfirmationDialogForSelectedItems() {
+        val selectedItems = viewModel.selectedItems.value ?: return
+
+        // Show confirmation dialog for each item in the selectedItems list
+        for (food in selectedItems) {
+            val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_food, null)
+            val textInput = dialogView.findViewById<TextInputEditText>(R.id.textInput)
+            val tilFood = dialogView.findViewById<TextInputLayout>(R.id.textInputLayoutAddFood)
+            tilFood.hint = "Serving size (${food.productQuantityUnit})"
+            textInput.setText(food.productQuantity.toString())
+
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle(food.productName)
+                .setView(dialogView)
+                .setPositiveButton("Add") { _, _ ->
+                    val quantity = textInput.text.toString().toLongOrNull() ?: food.productQuantity
+                    val diaryEntry = DiaryEntryEntity(
+                        foodCode = food.code,
+                        date = LocalDate.now(),
+                        quantity = quantity,
+                        productName = food.productName,
+                        productBrands = food.productBrands,
+                        productQuantityUnit = food.productQuantityUnit,
+                        imageUrl = food.imageUrl,
+                        energyKcal = food.energyKcal,
+                        carbohydrates = food.carbohydrates,
+                        proteins = food.proteins,
+                        fat = food.fat
+                    )
+                    viewModel.insertDiaryEntry(diaryEntry)
+                }
+                .setNegativeButton("Cancel", null)
+                .create()
+
+            dialog.show()
+        }
     }
 }
