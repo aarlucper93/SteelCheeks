@@ -28,12 +28,6 @@ class DiaryViewModel (private val repository: FoodRepository) : ViewModel() {
         repository.getDiaryTotalsForDate(it).asLiveData()
     }
 
-    fun insertDiaryEntry(entry: DiaryEntryEntity) {
-        viewModelScope.launch {
-            repository.insertDiaryEntry(entry)
-        }
-    }
-
     fun deleteDiaryEntry(entry: DiaryEntryEntity) {
         viewModelScope.launch {
             repository.deleteDiaryEntry(entry)

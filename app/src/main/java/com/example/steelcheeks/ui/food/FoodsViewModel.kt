@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.steelcheeks.data.FoodRepository
 import com.example.steelcheeks.data.database.food.FoodEntity
 import com.example.steelcheeks.data.database.FoodRoomDatabase
+import com.example.steelcheeks.data.database.diary.DiaryEntryEntity
 import com.example.steelcheeks.data.network.OpenFoodFactsResponse
 import com.example.steelcheeks.domain.Food
 import com.example.steelcheeks.utils.SingleLiveEvent
@@ -29,7 +30,7 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
     val searchQuery: LiveData<String> get() = _searchQuery
 
     init {
-        _searchQuery.value = ""
+        _searchQuery.value = ""     //TODO: List doesn't appear filtered after having added an item to the diary
     }
 
     private val _filteredLocalFoodList = MutableLiveData<List<FoodEntity>>()
@@ -143,7 +144,7 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
         } else {
             viewModelScope.launch {
                 val filteredList = localFoodList.value?.filter {
-                    it.productName.contains(query, true) || it.productBrands!!.contains(query, true)        //TODO: Control for nullable productBrands
+                    it.productName.contains(query, true) || it.productBrands!!.contains(query, true)
                 } ?: emptyList()
                 _foodItems.value = filteredList.map { repository.toDomainModel(it) }
             }
@@ -178,6 +179,12 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
                 }
             }
 
+        }
+    }
+
+    fun insertDiaryEntry(entry: DiaryEntryEntity) {
+        viewModelScope.launch {
+            repository.insertDiaryEntry(entry)
         }
     }
 

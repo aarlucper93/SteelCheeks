@@ -14,8 +14,6 @@ import com.example.steelcheeks.R
 import com.example.steelcheeks.SteelCheeksApplication
 import com.example.steelcheeks.data.database.diary.DiaryEntryEntity
 import com.example.steelcheeks.databinding.FragmentFoodDetailBinding
-import com.example.steelcheeks.ui.diary.DiaryViewModel
-import com.example.steelcheeks.ui.diary.DiaryViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -29,12 +27,6 @@ class FoodDetailFragment : Fragment() {
     private val args: FoodDetailFragmentArgs by navArgs()
     private val viewModel: FoodsViewModel by activityViewModels {
         FoodsViewModelFactory (
-            (activity?.application as SteelCheeksApplication).database
-        )
-    }
-
-    private val diaryViewModel: DiaryViewModel by activityViewModels {
-        DiaryViewModelFactory(
             (activity?.application as SteelCheeksApplication).database
         )
     }
@@ -122,7 +114,7 @@ class FoodDetailFragment : Fragment() {
                     proteins = food?.proteins,
                     fat = food?.fat
                 )
-                diaryViewModel.insertDiaryEntry(diaryEntry)
+                viewModel.insertDiaryEntry(diaryEntry)
                 Snackbar.make(requireView(), "Food added to diary", Snackbar.LENGTH_SHORT).show()
                 val action =
                     FoodDetailFragmentDirections.actionFoodDetailFragmentToDiaryFragment()
