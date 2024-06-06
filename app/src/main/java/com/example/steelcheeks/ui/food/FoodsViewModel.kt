@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.threeten.bp.LocalDate
 
 enum class LoadingStatus { READY, LOADING, ERROR, DONE }
 
@@ -27,10 +28,6 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
 
     private val _searchQuery = MutableLiveData<String>()
     val searchQuery: LiveData<String> get() = _searchQuery
-
-    init {
-        _searchQuery.value = ""     //TODO: List doesn't appear filtered after having added an item to the diary
-    }
 
     private val _filteredLocalFoodList = MutableLiveData<List<FoodEntity>>()
     val filteredLocalFoodList: LiveData<List<FoodEntity>> = _filteredLocalFoodList
@@ -65,8 +62,14 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
     private val _selectedCount = MutableLiveData<Int>(0)
     val selectedCount: LiveData<Int> get() = _selectedCount
 
+    private val _newEntryDate = MutableLiveData<LocalDate>(null)
+    val newEntryDate = _newEntryDate
+
+
     init {
         fetchLocalFoodItems()
+        _searchQuery.value = ""     //TODO: List doesn't appear filtered after having added an item to the diary
+
     }
 
 
@@ -228,6 +231,15 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
     fun clearSelectedItems() {
         _selectedItems.value = listOf()
         _selectedCount.value = 0
+        _foodItems.value = _foodItems.value?.map { it.copy(isSelected = false) }  //Clear checkboxes
+    }
+
+    fun setDateForNewEntry(selectedDate : Long?)  {
+        _newEntryDate.value = LocalDate.ofEpochDay(selectedDate ?: LocalDate.now().toEpochDay())
+    }
+
+    fun getDateForNewEntry() : LocalDate {
+        return _newEntryDate.value ?: LocalDate.now()
     }
 
 }

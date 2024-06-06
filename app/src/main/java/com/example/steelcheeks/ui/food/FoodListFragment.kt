@@ -16,7 +16,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -55,6 +54,11 @@ class FoodListFragment : Fragment(), MenuProvider {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Retrieve the date argument
+        val entryDateEpochDay = arguments?.getLong("selectedDate", LocalDate.now().toEpochDay())
+        viewModel.setDateForNewEntry(entryDateEpochDay)
+
 
         viewModel.setLoadingStatusAsReady()
 
@@ -127,7 +131,7 @@ class FoodListFragment : Fragment(), MenuProvider {
         }
 
 
-        //Search Field
+        /* Search Field */
         val searchEditText = binding.searchField.editText
 
         viewModel.searchQuery.observe(viewLifecycleOwner) { query ->
@@ -244,7 +248,7 @@ class FoodListFragment : Fragment(), MenuProvider {
         val selectedItems = viewModel.selectedItems.value ?: return
 
         // Show confirmation dialog for each item in the selectedItems list
-        for (food in selectedItems) {
+        for (food in selectedItems) {       //TODO: Cambiar para que aparezca una tras la otra y no todas de golpe
             val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_food, null)
             val textInput = dialogView.findViewById<TextInputEditText>(R.id.textInput)
             val tilFood = dialogView.findViewById<TextInputLayout>(R.id.textInputLayoutAddFood)
@@ -258,7 +262,7 @@ class FoodListFragment : Fragment(), MenuProvider {
                     val quantity = textInput.text.toString().toLongOrNull() ?: food.productQuantity
                     val diaryEntry = DiaryEntryEntity(
                         foodCode = food.code,
-                        date = LocalDate.now(),
+                        date = viewModel.getDateForNewEntry(),
                         quantity = quantity,
                         productName = food.productName,
                         productBrands = food.productBrands,

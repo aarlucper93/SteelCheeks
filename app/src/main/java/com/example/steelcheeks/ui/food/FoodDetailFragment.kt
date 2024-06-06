@@ -11,13 +11,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.steelcheeks.R
-import com.example.steelcheeks.SteelCheeksApplication
 import com.example.steelcheeks.data.database.diary.DiaryEntryEntity
 import com.example.steelcheeks.databinding.FragmentFoodDetailBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import org.threeten.bp.LocalDate
 
 
 class FoodDetailFragment : Fragment() {
@@ -104,7 +102,7 @@ class FoodDetailFragment : Fragment() {
                 val quantity = textInput.text.toString().toLongOrNull() ?: food?.productQuantity ?: 100
                 val diaryEntry = DiaryEntryEntity(
                     foodCode = food?.code ?: "",
-                    date = LocalDate.now(),     //TODO: Expandir para dar la posibilidad de añadir alimentos en otros días.
+                    date = viewModel.getDateForNewEntry(),
                     quantity = quantity,
                     productName = food?.productName ?: "",
                     productBrands = food?.productBrands,

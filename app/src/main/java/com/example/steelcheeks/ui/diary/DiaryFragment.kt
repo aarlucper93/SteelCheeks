@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.steelcheeks.SteelCheeksApplication
@@ -68,8 +69,8 @@ class DiaryFragment : Fragment() {
             }
         }
 
-        //Fecha inicial
-        val dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        //Initial date
+        val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         binding.tvDate.text = viewModel.date.value?.let { dateFormatter.format(it) }
 
         binding.btnBack.setOnClickListener {
@@ -82,6 +83,12 @@ class DiaryFragment : Fragment() {
             viewModel.date.value?.let {
                 viewModel.setDate(it.plusDays(1))
             }
+        }
+
+        binding.fabAddItem.setOnClickListener {
+            val date = viewModel.date.value?.toEpochDay()
+            val action = DiaryFragmentDirections.actionDiaryFragmentToFoodListFragment(date ?: -1)
+            findNavController().navigate(action)
         }
 
         // Observe the date and update UI accordingly
