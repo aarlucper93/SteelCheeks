@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.steelcheeks.SteelCheeksApplication
 import com.example.steelcheeks.data.database.diary.DiaryEntryEntity
 import com.example.steelcheeks.databinding.FragmentDiaryBinding
+import com.google.android.material.datepicker.MaterialDatePicker
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 
 
@@ -26,6 +29,7 @@ class DiaryFragment : Fragment() {
         )
     }
     private lateinit var diaryAdapter: DiaryAdapter
+    private lateinit var datePicker: MaterialDatePicker<Long>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +49,23 @@ class DiaryFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.recyclerView.adapter = diaryAdapter
+
+        /* Date Picker */
+        datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Select Date")
+            .setSelection(viewModel.date.value?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli())            .build()
+
+        datePicker.addOnPositiveButtonClickListener { selection ->
+            selection?.let {
+                val selectedDate = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                viewModel.setDate(selectedDate)
+            }
+        }
+
+        binding.tvDate.setOnClickListener {
+            datePicker.show(parentFragmentManager, "DATE_PICKER")
+        }
+
 
         binding.recyclerView.addItemDecoration(
             DividerItemDecoration(
