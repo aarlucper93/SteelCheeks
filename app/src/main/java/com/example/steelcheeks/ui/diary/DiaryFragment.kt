@@ -53,11 +53,14 @@ class DiaryFragment : Fragment() {
         /* Date Picker */
         datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Select Date")
-            .setSelection(viewModel.date.value?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli())            .build()
+            .setSelection(viewModel.date.value?.plusDays(1)?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli())
+            .build()
 
         datePicker.addOnPositiveButtonClickListener { selection ->
             selection?.let {
-                val selectedDate = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                val selectedDate = Instant.ofEpochMilli(it)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate()
                 viewModel.setDate(selectedDate)
             }
         }
