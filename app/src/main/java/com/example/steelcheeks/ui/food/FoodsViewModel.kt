@@ -10,7 +10,6 @@ import com.example.steelcheeks.data.FoodRepository
 import com.example.steelcheeks.data.database.food.FoodEntity
 import com.example.steelcheeks.data.database.FoodRoomDatabase
 import com.example.steelcheeks.data.database.diary.DiaryEntryEntity
-import com.example.steelcheeks.data.network.OpenFoodFactsResponse
 import com.example.steelcheeks.domain.Food
 import com.example.steelcheeks.utils.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
@@ -36,16 +35,13 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
     private val _status = MutableLiveData<LoadingStatus>()
     val status: LiveData<LoadingStatus> = _status
 
-    //List of products returned by the request
-    private val _products = MutableLiveData<OpenFoodFactsResponse>()
-    val products: LiveData<OpenFoodFactsResponse> = _products
-
     //The Food returned by the request -- OLD
     private val _food = MutableLiveData<Food>(null)
     val food: LiveData<Food> = _food
 
     private val _result = MutableLiveData<Long>(-1L)
     val result: LiveData<Long> = _result
+
 
     private val _snackbarMessage = SingleLiveEvent<String>()
     val snackbarMessage: LiveData<String> = _snackbarMessage
@@ -71,12 +67,6 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
         _searchQuery.value = ""     //TODO: List doesn't appear filtered after having added an item to the diary
 
     }
-
-
-    //Nutriments of the food returned by the request
-    /*val kcal: LiveData<Double?> = food.map { it.product.nutriments.energyKcal }
-    val carbohydrates: LiveData<Double?> = food.map {it.product.nutriments.carbohydrates }
-    val proteins: LiveData<Double?> = food.map { it.product.nutriments.proteins }*/
 
     fun setSearchQuery(query: String) {
         _searchQuery.value = query
@@ -112,7 +102,7 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
         }
     }
 
-    fun getFoodByBarcode(barcode: String, callback: (String) -> Unit) {
+    fun setFoodByBarcode(barcode: String, callback: (String) -> Unit) {
         viewModelScope.launch {
             _status.value = LoadingStatus.LOADING
             try {

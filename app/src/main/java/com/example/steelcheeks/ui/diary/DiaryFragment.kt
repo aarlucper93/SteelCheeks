@@ -77,22 +77,6 @@ class DiaryFragment : Fragment() {
             )
         )
 
-        viewModel.diaryEntries.observe(viewLifecycleOwner) {entries ->
-            entries?.let {
-                diaryAdapter.submitList(it)
-            }
-        }
-
-        // Update UI with the diary totals
-        viewModel.diaryTotals.observe(viewLifecycleOwner) { totals ->
-            totals?.let {
-                binding.tvCaloriesValue.text = it.totalCalories?.toString() ?: "0"
-                binding.tvCarbsValue.text = it.totalCarbohydrates?.toString() ?: "0"
-                binding.tvProteinsValue.text = it.totalProteins?.toString() ?: "0"
-                binding.tvFatsValue.text = it.totalFat?.toString() ?: "0"
-            }
-        }
-
         //Initial date
         val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         binding.tvDate.text = viewModel.date.value?.let { dateFormatter.format(it) }
@@ -113,6 +97,23 @@ class DiaryFragment : Fragment() {
             val date = viewModel.date.value?.toEpochDay()
             val action = DiaryFragmentDirections.actionDiaryFragmentToFoodListFragment(date ?: -1)
             findNavController().navigate(action)
+        }
+
+
+        viewModel.diaryEntries.observe(viewLifecycleOwner) {entries ->
+            entries?.let {
+                diaryAdapter.submitList(it)
+            }
+        }
+
+        // Update diary totals
+        viewModel.diaryTotals.observe(viewLifecycleOwner) { totals ->
+            totals?.let {
+                binding.tvCaloriesValue.text = it.totalCalories?.toString() ?: "0"
+                binding.tvCarbsValue.text = it.totalCarbohydrates?.toString() ?: "0"
+                binding.tvProteinsValue.text = it.totalProteins?.toString() ?: "0"
+                binding.tvFatsValue.text = it.totalFat?.toString() ?: "0"
+            }
         }
 
         // Observe the date and update UI accordingly

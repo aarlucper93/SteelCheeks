@@ -41,7 +41,7 @@ class FoodListAdapter(
                 productName.text = food.productName
                 productBrand.text = food.productBrands
                 //TODO: Extract hardcoded strings to string resources (passing context from fragment as adapter's parameter?)
-                productAmount.text = "${food.productQuantity}${food.productQuantityUnit} : "     //TODO P1: Quitar el hardcodeo
+                productAmount.text = "${food.productQuantity}${food.productQuantityUnit} : "
                 productEnergy.text = "${food.energyKcal.toString()} kcal"
 
                 checkbox.setOnCheckedChangeListener(null)

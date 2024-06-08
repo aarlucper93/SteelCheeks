@@ -59,7 +59,6 @@ class FoodListFragment : Fragment(), MenuProvider {
         val entryDateEpochDay = arguments?.getLong("selectedDate", LocalDate.now().toEpochDay())
         viewModel.setDateForNewEntry(entryDateEpochDay)
 
-
         viewModel.setLoadingStatusAsReady()
 
         val adapter = FoodListAdapter (
@@ -73,7 +72,6 @@ class FoodListFragment : Fragment(), MenuProvider {
 
         )
 
-        // The lifecycle of the LiveData bound to the layout is that of the Fragment's
         binding.lifecycleOwner = viewLifecycleOwner
         binding.recyclerView.addItemDecoration(
             DividerItemDecoration(
@@ -82,21 +80,7 @@ class FoodListFragment : Fragment(), MenuProvider {
             )
         )
         binding.recyclerView.adapter = adapter
-        // Gives the binding access to the FoodsViewModel
         binding.viewModel = viewModel
-
-        /* viewModel.products.observe(viewLifecycleOwner) {foodList ->
-            foodList?.let {
-                val foodItems = it.products.map { food -> FoodItem.ResponseFoodItem(food) }
-                adapter.submitList(foodItems)
-            }
-        }
-
-        viewModel.filteredLocalFoodList.observe(viewLifecycleOwner) { filteredList ->
-            filteredList?.let {
-                adapter.submitList(foodItems)
-            }
-        } */
 
         viewModel.foodItems.observe(viewLifecycleOwner) { foodList ->
             foodList?.let {
@@ -104,14 +88,6 @@ class FoodListFragment : Fragment(), MenuProvider {
             }
         }
 
-        /*viewModel.localFoodList.observe(viewLifecycleOwner) { localFoodList ->
-            if (viewModel.remoteListMode.value == false) {
-                localFoodList?.let {
-                    viewModel.setListToLocalFoodItems()
-                    //adapter.submitList(viewModel.foodItems.value)
-                }
-            }
-        }*/
 
         viewModel.snackbarMessage.observe(viewLifecycleOwner) { message ->
             Snackbar.make(
@@ -122,7 +98,7 @@ class FoodListFragment : Fragment(), MenuProvider {
         }
 
         viewModel.selectedItems.observe(viewLifecycleOwner) {
-            // Update action bar with the count and check icon if necessary
+            // Update action bar
             activity?.invalidateOptionsMenu()
         }
 
@@ -177,7 +153,7 @@ class FoodListFragment : Fragment(), MenuProvider {
     }
 
 
-    /* Menú de la barra superior */
+    /* Action Bar Menu */
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.food_list_menu, menu)
     }
@@ -215,6 +191,7 @@ class FoodListFragment : Fragment(), MenuProvider {
         }
     }
 
+    /* Scanner */
     private fun startBarcodeScanner() {
         val options = ScanOptions()
         options.setPrompt("Scan a barcode")
@@ -226,7 +203,7 @@ class FoodListFragment : Fragment(), MenuProvider {
     private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
         if (result.contents != null) {
             val barcode = result.contents.toString()
-            viewModel.getFoodByBarcode(barcode) {
+            viewModel.setFoodByBarcode(barcode) {
                 navigateToDetailScreen(it)
             }
             viewModel.setLoadingStatusAsReady()     // Reset loading status
@@ -249,7 +226,7 @@ class FoodListFragment : Fragment(), MenuProvider {
         val selectedItems = viewModel.selectedItems.value ?: return
 
         // Show confirmation dialog for each item in the selectedItems list
-        for (food in selectedItems) {       //TODO: Cambiar para que aparezca una tras la otra y no todas de golpe
+        for (food in selectedItems) {       //TODO: Change so the dialogs appear sequentially
             val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_food, null)
             val textInput = dialogView.findViewById<TextInputEditText>(R.id.textInput)
             val tilFood = dialogView.findViewById<TextInputLayout>(R.id.textInputLayoutAddFood)

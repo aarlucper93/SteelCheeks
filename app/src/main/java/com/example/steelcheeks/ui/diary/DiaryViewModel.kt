@@ -16,10 +16,11 @@ import org.threeten.bp.LocalDate
 
 class DiaryViewModel (private val repository: FoodRepository) : ViewModel() {
 
-
+    //Default date is current date
     private val _date = MutableLiveData<LocalDate>(LocalDate.now())
     val date: LiveData<LocalDate> get() = _date
 
+    //Diary entries and totals are updated if date is updated
     val diaryEntries: LiveData<List<DiaryEntryEntity>> = _date.switchMap() {
         repository.getDiaryEntriesForDate(it).asLiveData()
     }

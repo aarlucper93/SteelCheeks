@@ -26,7 +26,7 @@ class DiaryAdapter(private val onLongClickListener: (DiaryEntryEntity) -> Unit) 
     }
 
     class ViewHolder(private var binding: ListItemDiaryBinding) : RecyclerView.ViewHolder(binding.root) {
-        @SuppressLint("SetTextI18n")        //Se utilizar string resources para evitar pasarle el contexto al adapter
+        @SuppressLint("SetTextI18n")        //Using string resources to avoid having to pass context to adapter
         fun bind(diaryEntry: DiaryEntryEntity, onLongClickListener: (DiaryEntryEntity) -> Unit) {
             binding.apply {
                 binding.productName.text = diaryEntry.productName
