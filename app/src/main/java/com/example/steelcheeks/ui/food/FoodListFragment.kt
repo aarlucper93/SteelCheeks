@@ -202,6 +202,7 @@ class FoodListFragment : Fragment(), MenuProvider {
             }
             R.id.action_selected_count -> {
                 if (viewModel.remoteListMode.value == false) {
+                    findNavController().popBackStack()
                     showConfirmationDialogForSelectedItems()
                     true
                 } else {

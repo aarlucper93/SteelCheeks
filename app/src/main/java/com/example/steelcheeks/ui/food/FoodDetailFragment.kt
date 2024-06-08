@@ -78,8 +78,7 @@ class FoodDetailFragment : Fragment() {
                 showConfirmationDialog()
             } else {
                 viewModel.insertFoodToLocalDatabase(viewModel.food)
-                /*val action = FoodDetailFragmentDirections.actionFoodDetailFragmentToFoodListFragment()
-                findNavController().navigate(action)*/
+                findNavController().popBackStack()
             }
         }
     }
