@@ -7,10 +7,14 @@ data class OpenFoodFactsResponse (
     val count: Int
 )
 
+data class SingleProductOffResponse (
+    val product: Product
+)
+
 data class Product (
     val code: String,
-    @Json(name = "product_name") val productName: String,
-    @Json(name = "brands") val productBrands: String?,
+    @Json(name = "product_name") val productName: String = "Not provided",
+    @Json(name = "brands") val productBrands: String? = "Not provided",
     @Json(name = "image_url") val imageUrl: String?,
     @Json(name = "product_quantity") val productQuantity : Long = 100,
     @Json(name = "product_quantity_unit") val productQuantityUnit : String = "g",
@@ -18,9 +22,9 @@ data class Product (
 )
 
 data class Nutriments(
-    @Json(name = "energy-kcal") val energyKcal: Double?,
-    @Json(name = "carbohydrates") val carbohydrates: Double?,
-    @Json(name = "proteins") val proteins: Double?,
-    @Json(name = "fat") val fat: Double?
+    @Json(name = "energy-kcal") val energyKcal: Double? = 0.0,
+    @Json(name = "carbohydrates") val carbohydrates: Double? = 0.0,
+    @Json(name = "proteins") val proteins: Double? = 0.0,
+    @Json(name = "fat") val fat: Double? = 0.0
 )
 

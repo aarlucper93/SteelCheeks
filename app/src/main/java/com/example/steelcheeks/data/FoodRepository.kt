@@ -7,7 +7,9 @@ import com.example.steelcheeks.data.database.food.FoodEntity
 import com.example.steelcheeks.data.database.FoodRoomDatabase
 import com.example.steelcheeks.data.network.Product
 import com.example.steelcheeks.data.network.OpenFoodFactsResponse
-import com.example.steelcheeks.data.network.FoodsApi
+import com.example.steelcheeks.data.network.FoodSearchApi
+import com.example.steelcheeks.data.network.SingleFoodApi
+import com.example.steelcheeks.data.network.SingleProductOffResponse
 import com.example.steelcheeks.domain.Food
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -21,8 +23,8 @@ class FoodRepository(private val database: FoodRoomDatabase) {
     suspend fun insertFood(food: Food): Long {
         val foodEntity = FoodEntity(
             food.code,
+            food.productName ?: "No name specified",
             food.productBrands ?: "No brand specified",
-            food.productName,
             food.imageUrl,
             food.productQuantity,
             food.productQuantityUnit,
@@ -38,10 +40,32 @@ class FoodRepository(private val database: FoodRoomDatabase) {
         return result
     }
 
+    private lateinit var resultList : List<Long>
+    suspend fun insertFoodList(foodList: List<Food>): List<Long> {
+        val foodListEntity = foodList.map {toEntityModel(it)
+        }
+        withContext(Dispatchers.IO) {
+            resultList = database.foodDao().insertAll(foodListEntity)
+        }
+
+        return resultList
+    }
+
     suspend fun getFoodList(searchTerms: String): Response<OpenFoodFactsResponse>? {
         return withContext(Dispatchers.IO) {
             try {
-                FoodsApi.retrofitService.getFoodList(searchTerms)
+                FoodSearchApi.retrofitService.getFoodList(searchTerms)
+            } catch (e: Exception) {
+                Log.e("FoodRepository", "Error fetching data: ${e.message}", e)
+                null
+            }
+        }
+    }
+
+    suspend fun getProductByBarcode(barcode: String): Response<SingleProductOffResponse>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                SingleFoodApi.retrofitService.getProductByBarcode(barcode)
             } catch (e: Exception) {
                 Log.e("FoodRepository", "Error fetching data: ${e.message}", e)
                 null
@@ -98,6 +122,20 @@ class FoodRepository(private val database: FoodRoomDatabase) {
             proteins = foodEntity.proteins,
             fat = foodEntity.fat,
             isFromLocal = true
+        )
+    }
+
+    fun toEntityModel(food: Food) : FoodEntity{
+        return FoodEntity(
+            code = food.code,
+            productName = food.productName,
+            productBrands = food.productBrands,
+            imageUrl = food.imageUrl,
+            productQuantityUnit = food.productQuantityUnit,
+            energyKcal = food.energyKcal,
+            carbohydrates = food.carbohydrates,
+            proteins = food.proteins,
+            fat = food.fat,
         )
     }
 

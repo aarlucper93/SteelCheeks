@@ -11,12 +11,12 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-//Siendo search_terms el criterio de busqueda
 const val BASE_URL = "https://world.openfoodfacts.org/cgi/"
 
+//TODO: Extract common network tools into own file
 
 //Build Moshi object that Retrofit will be using
-private val moshi = Moshi.Builder()
+val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()
 
@@ -33,7 +33,7 @@ class UserAgentInterceptor(private val userAgent: String) : Interceptor {
 
 // Create an OkHttpClient and add the UserAgentInterceptor
 val okHttpClient = OkHttpClient.Builder()
-    .addInterceptor(UserAgentInterceptor("Steelcheeks/0.1.0 (aaronlp.ai93@gmail.com)"))
+    .addInterceptor(UserAgentInterceptor("SteelCheeks/0.1.0 (aaronlp.ai93@gmail.com)"))
     .connectTimeout(45, java.util.concurrent.TimeUnit.SECONDS) // Connection timeout
     .readTimeout(45, java.util.concurrent.TimeUnit.SECONDS)    // Read timeout
     .writeTimeout(45, java.util.concurrent.TimeUnit.SECONDS)
@@ -48,8 +48,8 @@ val retrofit = Retrofit.Builder()
     .client(okHttpClient) // Set the OkHttpClient with the User-Agent interceptor
     .build()
 
-//Returns a single Food entry TODO: change to a list of foods
-interface FoodsApiService {
+//Returns a list of foods
+interface FoodSearchApiService {
     @GET("search.pl")
     suspend fun getFoodList(
         @Query("search_terms") searchTerms: String,
@@ -61,8 +61,8 @@ interface FoodsApiService {
 }
 
 //Public Api object that exposes the lazy-initialized Retrofit service
-object FoodsApi {
-    val retrofitService: FoodsApiService by lazy {
-        retrofit.create(FoodsApiService::class.java)
+object FoodSearchApi {
+    val retrofitService: FoodSearchApiService by lazy {
+        retrofit.create(FoodSearchApiService::class.java)
     }
 }

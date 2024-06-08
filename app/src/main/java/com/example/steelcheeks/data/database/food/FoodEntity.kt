@@ -9,7 +9,7 @@ data class FoodEntity (
     @PrimaryKey
     val code: String,
     @ColumnInfo(name = "product_name") val productName: String,
-    @ColumnInfo(name = "brands") val productBrands: String?,
+    @ColumnInfo(name = "brands") val productBrands: String? = "Not provided",
     @ColumnInfo(name = "image_url") val imageUrl: String?,
     @ColumnInfo(name = "serving_quantity") val productQuantity : Long = 100,
     @ColumnInfo(name = "product_quantity_unit") val productQuantityUnit : String = "g",

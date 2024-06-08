@@ -13,6 +13,9 @@
             app:destination="@id/foodDetailFragment"
             app:enterAnim="@anim/anim_slide_in_right"
             app:exitAnim="@anim/anim_slide_out_left" />
+        <argument
+            android:name="selectedDate"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/foodDetailFragment"
@@ -25,6 +28,7 @@
             app:destination="@id/foodListFragment"
             app:enterAnim="@anim/anim_slide_in_right"
             app:exitAnim="@anim/anim_slide_out_left"
+            app:popExitAnim="@android:anim/slide_out_right"
             app:popUpTo="@id/foodListFragment" />
         <action
             android:id="@+id/action_foodDetailFragment_to_diaryFragment"
@@ -36,5 +40,9 @@
         android:id="@+id/diaryFragment"
         android:name="com.example.steelcheeks.ui.diary.DiaryFragment"
         android:label="Diary"
-        tools:layout="@layout/fragment_diary" />
+        tools:layout="@layout/fragment_diary" >
+        <action
+            android:id="@+id/action_diaryFragment_to_foodListFragment"
+            app:destination="@id/foodListFragment" />
+    </fragment>
 </navigation>

@@ -5,12 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.steelcheeks.data.database.food.FoodEntity
 import com.example.steelcheeks.databinding.ListItemBinding
-import com.example.steelcheeks.data.network.Product
 import com.example.steelcheeks.domain.Food
 
-class FoodListAdapter(private val onItemClicked: (Food) -> Unit) :
+class FoodListAdapter(
+    private val onItemClicked: (Food) -> Unit,
+    private val onItemCheckedChanged: (Food, Boolean) -> Unit
+) :
     ListAdapter<Food, FoodListAdapter.ViewHolder>(
         Diffcallback
     ) {
@@ -26,20 +27,29 @@ class FoodListAdapter(private val onItemClicked: (Food) -> Unit) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        holder.itemView.setOnClickListener {
-            onItemClicked(item)
-        }
-        holder.bind(item)
+        holder.bind(item, onItemClicked, onItemCheckedChanged)
     }
 
     class ViewHolder(private var binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(Food: Food) {
+        fun bind(
+            food: Food,
+            onItemClicked: (Food) -> Unit,
+            onItemCheckedChanged: (Food, Boolean) -> Unit
+        ) {
+            itemView.setOnClickListener { onItemClicked(food) }
             binding.apply {
-                productName.text = Food.productName
-                productBrand.text = Food.productBrands
+                productName.text = food.productName
+                productBrand.text = food.productBrands
                 //TODO: Extract hardcoded strings to string resources (passing context from fragment as adapter's parameter?)
-                productAmount.text = "${Food.productQuantity}${Food.productQuantityUnit} : "     //TODO P1: Quitar el hardcodeo
-                productEnergy.text = "${Food.energyKcal.toString()} kcal"
+                productAmount.text = "${food.productQuantity}${food.productQuantityUnit} : "
+                productEnergy.text = "${food.energyKcal.toString()} kcal"
+
+                checkbox.setOnCheckedChangeListener(null)
+                checkbox.isChecked = food.isSelected
+                checkbox.setOnCheckedChangeListener { _, isChecked ->
+                    onItemCheckedChanged(food, isChecked)
+                }
+
             }
         }
     }

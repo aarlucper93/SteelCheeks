@@ -7,9 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.steelcheeks.SteelCheeksApplication
 import com.example.steelcheeks.data.database.diary.DiaryEntryEntity
 import com.example.steelcheeks.databinding.FragmentDiaryBinding
+import com.google.android.material.datepicker.MaterialDatePicker
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 
 
@@ -23,6 +29,7 @@ class DiaryFragment : Fragment() {
         )
     }
     private lateinit var diaryAdapter: DiaryAdapter
+    private lateinit var datePicker: MaterialDatePicker<Long>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,24 +50,35 @@ class DiaryFragment : Fragment() {
         binding.viewModel = viewModel
         binding.recyclerView.adapter = diaryAdapter
 
-        viewModel.diaryEntries.observe(viewLifecycleOwner) {entries ->
-            entries?.let {
-                diaryAdapter.submitList(it)
+        /* Date Picker */
+        datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Select Date")
+            .setSelection(viewModel.date.value?.plusDays(1)?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli())
+            .build()
+
+        datePicker.addOnPositiveButtonClickListener { selection ->
+            selection?.let {
+                val selectedDate = Instant.ofEpochMilli(it)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate()
+                viewModel.setDate(selectedDate)
             }
         }
 
-        // Update UI with the diary totals
-        viewModel.diaryTotals.observe(viewLifecycleOwner) { totals ->
-            totals?.let {
-                binding.tvCaloriesValue.text = it.totalCalories?.toString() ?: "0"
-                binding.tvCarbsValue.text = it.totalCarbohydrates?.toString() ?: "0"
-                binding.tvProteinsValue.text = it.totalProteins?.toString() ?: "0"
-                binding.tvFatsValue.text = it.totalFat?.toString() ?: "0"
-            }
+        binding.tvDate.setOnClickListener {
+            datePicker.show(parentFragmentManager, "DATE_PICKER")
         }
 
-        //Fecha inicial
-        val dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+
+        binding.recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                context,
+                LinearLayoutManager.VERTICAL
+            )
+        )
+
+        //Initial date
+        val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         binding.tvDate.text = viewModel.date.value?.let { dateFormatter.format(it) }
 
         binding.btnBack.setOnClickListener {
@@ -72,6 +90,29 @@ class DiaryFragment : Fragment() {
         binding.btnForward.setOnClickListener {
             viewModel.date.value?.let {
                 viewModel.setDate(it.plusDays(1))
+            }
+        }
+
+        binding.fabAddItem.setOnClickListener {
+            val date = viewModel.date.value?.toEpochDay()
+            val action = DiaryFragmentDirections.actionDiaryFragmentToFoodListFragment(date ?: -1)
+            findNavController().navigate(action)
+        }
+
+
+        viewModel.diaryEntries.observe(viewLifecycleOwner) {entries ->
+            entries?.let {
+                diaryAdapter.submitList(it)
+            }
+        }
+
+        // Update diary totals
+        viewModel.diaryTotals.observe(viewLifecycleOwner) { totals ->
+            totals?.let {
+                binding.tvCaloriesValue.text = it.totalCalories?.toString() ?: "0"
+                binding.tvCarbsValue.text = it.totalCarbohydrates?.toString() ?: "0"
+                binding.tvProteinsValue.text = it.totalProteins?.toString() ?: "0"
+                binding.tvFatsValue.text = it.totalFat?.toString() ?: "0"
             }
         }
 

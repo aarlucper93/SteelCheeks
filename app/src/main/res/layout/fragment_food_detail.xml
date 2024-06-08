@@ -24,10 +24,10 @@
                     android:id="@+id/tvDetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="1dp"
                     android:text="@string/detail_view_details_header"
-                    android:textStyle="bold"
                     android:textSize="18sp"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -37,9 +37,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:adjustViewBounds="true"
                     android:maxWidth="200dp"
                     android:maxHeight="200dp"
-                    android:adjustViewBounds="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvDetails"
@@ -51,6 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:text="@string/detail_view_barcode_field"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/foodDetailImage" />
 
@@ -69,20 +70,21 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="30dp"
                     android:text="@string/detail_view_name_field"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvBarcode" />
 
                 <TextView
                     android:id="@+id/tvNameValue"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tvName"
-                    app:layout_constraintStart_toEndOf="@id/tvName"
                     android:layout_marginStart="20dp"
-                    app:layout_constraintHorizontal_bias="1"
                     android:ellipsize="end"
+                    android:gravity="end"
                     android:maxLines="1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/detailsBarrier"
+                    app:layout_constraintTop_toTopOf="@id/tvName"
                     tools:text="Nombre del producto" />
 
                 <TextView
@@ -91,14 +93,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="@string/detail_view_brand_field"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvName" />
 
                 <TextView
                     android:id="@+id/tvBrandValue"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:gravity="end"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/detailsBarrier"
                     app:layout_constraintTop_toTopOf="@id/tvBrand"
                     tools:text="El Pozo" />
 
@@ -108,15 +113,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="@string/detail_view_serving_size_field"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvBrand" />
 
-                <!-- TODO P1: Add property to the food model so it can be added dynamically -->
                 <TextView
                     android:id="@+id/tvServingSizeValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="25g"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tvServingSize"
                     tools:text="25g" />
@@ -125,8 +129,9 @@
                     android:id="@+id/tvServingUnit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/tv_food_detail_serving_unit"
                     android:layout_marginTop="10dp"
+                    android:text="@string/tv_food_detail_serving_unit"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvServingSize"
                     tools:text="Serving Unit" />
@@ -139,11 +144,18 @@
                     app:layout_constraintTop_toTopOf="@id/tvServingUnit"
                     tools:text="g" />
 
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/detailsBarrier"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:barrierDirection="end"
+                    app:constraint_referenced_ids="tvBarcode,tvName,tvBrand,tvServingSize,tvServingUnit" />
+
                 <TextView
                     android:id="@+id/tvNutritionalValues"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="25dp"
                     android:text="@string/detail_view_nutritional_values_header"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -157,6 +169,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="@string/detail_view_calories_field"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvNutritionalValues" />
 
@@ -165,9 +178,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="699"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvNutritionalValues" />
+                    app:layout_constraintTop_toBottomOf="@id/tvNutritionalValues"
+                    tools:text="699" />
 
                 <TextView
                     android:id="@+id/tvProtein"
@@ -175,6 +188,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="@string/detail_view_protein_field"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvCalories" />
 
@@ -183,9 +197,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="69"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvCalories" />
+                    app:layout_constraintTop_toBottomOf="@id/tvCalories"
+                    tools:text="69" />
 
                 <TextView
                     android:id="@+id/tvCarbs"
@@ -193,6 +207,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="@string/detail_view_carbohydrates_field"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvProtein" />
 
@@ -201,9 +216,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="19"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvProtein" />
+                    app:layout_constraintTop_toBottomOf="@id/tvProtein"
+                    tools:text="19" />
 
                 <TextView
                     android:id="@+id/tvFat"
@@ -211,6 +226,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="@string/detail_view_fat_field"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvCarbs" />
 
@@ -219,9 +235,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="10"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvCarbs" />
+                    app:layout_constraintTop_toBottomOf="@id/tvCarbs"
+                    tools:text="10" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
@@ -230,12 +246,12 @@
             android:id="@+id/fab_save_to_database"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            app:srcCompat="@drawable/ic_save_24"
-            android:contentDescription="@string/save_food_to_local_database" />
+            android:contentDescription="@string/save_food_to_local_database"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_save_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
