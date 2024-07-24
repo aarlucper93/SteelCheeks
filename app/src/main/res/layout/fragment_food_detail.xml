@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.example.steelcheeks.ui.food.FoodsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,6 +45,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvDetails"
+                    app:imageUrl="@{viewModel.food.imageUrl}"
                     tools:src="@tools:sample/avatars" />
 
                 <TextView
@@ -61,7 +64,8 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tvBarcode"
-                    tools:text="3293423092" />
+                    tools:text="3293423092"
+                    android:text="@{viewModel.food.code}"/>
 
                 <TextView
                     android:id="@+id/tvName"
@@ -85,7 +89,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/detailsBarrier"
                     app:layout_constraintTop_toTopOf="@id/tvName"
-                    tools:text="Nombre del producto" />
+                    tools:text="Nombre del producto"
+                    android:text="@{viewModel.food.productName}"/>
 
                 <TextView
                     android:id="@+id/tvBrand"
@@ -105,7 +110,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/detailsBarrier"
                     app:layout_constraintTop_toTopOf="@id/tvBrand"
-                    tools:text="El Pozo" />
+                    tools:text="El Pozo"
+                    android:text="@{viewModel.food.productBrands}"/>
 
                 <TextView
                     android:id="@+id/tvServingSize"
@@ -123,7 +129,8 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tvServingSize"
-                    tools:text="25g" />
+                    tools:text="25"
+                    android:text="@{Long.toString(viewModel.food.productQuantity)}"/>
 
                 <TextView
                     android:id="@+id/tvServingUnit"
@@ -142,7 +149,8 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tvServingUnit"
-                    tools:text="g" />
+                    tools:text="g"
+                    android:text="@{viewModel.food.productQuantityUnit}"/>
 
                 <androidx.constraintlayout.widget.Barrier
                     android:id="@+id/detailsBarrier"
@@ -180,7 +188,8 @@
                     android:layout_marginTop="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvNutritionalValues"
-                    tools:text="699" />
+                    tools:text="699"
+                    android:text="@{viewModel.food.energyKcal.toString()}"/>
 
                 <TextView
                     android:id="@+id/tvProtein"
@@ -199,7 +208,8 @@
                     android:layout_marginTop="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvCalories"
-                    tools:text="69" />
+                    tools:text="69"
+                    android:text="@{viewModel.food.proteins.toString()}"/>
 
                 <TextView
                     android:id="@+id/tvCarbs"
@@ -218,7 +228,8 @@
                     android:layout_marginTop="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvProtein"
-                    tools:text="19" />
+                    tools:text="19"
+                    android:text="@{viewModel.food.carbohydrates.toString()}"/>
 
                 <TextView
                     android:id="@+id/tvFat"
@@ -237,7 +248,8 @@
                     android:layout_marginTop="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvCarbs"
-                    tools:text="10" />
+                    tools:text="10"
+                    android:text="@{viewModel.food.fat.toString()}"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

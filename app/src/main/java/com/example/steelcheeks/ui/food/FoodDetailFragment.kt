@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.bumptech.glide.Glide
 import com.example.steelcheeks.R
 import com.example.steelcheeks.data.database.diary.DiaryEntryEntity
 import com.example.steelcheeks.databinding.FragmentFoodDetailBinding
@@ -45,24 +44,10 @@ class FoodDetailFragment : Fragment() {
         if (viewModel.itemWasScanned.value == false) {
             viewModel.setFoodItemByBarcode(args.barcode)
         }
-        binding.apply {
-            tvBarcodeValue.text = viewModel.food.value?.code
-            tvNameValue.text = viewModel.food.value?.productName
-            tvBrandValue.text = viewModel.food.value?.productBrands
-            tvServingSizeValue.text = viewModel.food.value?.productQuantity.toString()
-            tvServingUnitValue.text = viewModel.food.value?.productQuantityUnit
-            tvCaloriesValue.text = viewModel.food.value?.energyKcal.toString()
-            tvProteinValue.text = viewModel.food.value?.proteins.toString()
-            tvCarbsValue.text = viewModel.food.value?.carbohydrates.toString()
-            tvFatValue.text = viewModel.food.value?.fat.toString()
-            if (viewModel.food.value!!.isFromLocal) {
-                fabSaveToDatabase.setImageResource(R.drawable.ic_add_24)
-            }
 
-            Glide.with(requireContext())
-                .load(viewModel.food.value?.imageUrl)
-                .into(foodDetailImage)
-        }
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
         viewModel.setScannedItemAsLoaded()
 
         viewModel.snackbarMessage.observe(viewLifecycleOwner) { message ->

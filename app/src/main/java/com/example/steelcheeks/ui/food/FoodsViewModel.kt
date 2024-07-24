@@ -72,7 +72,7 @@ class FoodsViewModel(private val repository: FoodRepository) : ViewModel() {
         _searchQuery.value = query
     }
 
-    //Launches a coroutine that uses the Foods Api Retrofit Service to get a Food entry
+    //Launches a coroutine that uses the Foods Api Retrofit Service to get a list of Food Entries
     fun getFoodEntries(searchTerms: String) {
         viewModelScope.launch {
             _status.value = LoadingStatus.LOADING

@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.title = "Diary"
-        setSupportActionBar(toolbar)    //
+        setSupportActionBar(toolbar)
         toolbar.setupWithNavController(navController, appBarConfiguration)
 
         //Set up Navigation View
