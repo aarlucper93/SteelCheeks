@@ -10,7 +10,7 @@ class SteelCheeksApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        //Permite el uso de LocalDate con versiones de API inferiores a 26
+        //Enable the use LocalDate for <26 API versions
         AndroidThreeTen.init(this)
     }
 }

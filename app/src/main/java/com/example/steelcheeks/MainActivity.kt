@@ -30,7 +30,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         //Set up the action bar
         appBarConfiguration = AppBarConfiguration(setOf(
-            R.id.foodListFragment, R.id.diaryFragment
+            R.id.foodListFragment,
+            R.id.diaryFragment,
+            R.id.settingsFragment,
         ), drawerLayout)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
