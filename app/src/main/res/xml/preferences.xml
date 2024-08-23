@@ -10,7 +10,7 @@
         app:key="theme"
         app:title="Theme"
         app:entries="@array/Theme"
-        app:entryValues="@array/Theme"
+        app:entryValues="@array/ThemeValues"
         app:summary=""/>
 
     <PreferenceCategory
