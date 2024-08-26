@@ -4,19 +4,36 @@ import android.app.UiModeManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.viewModels
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.example.steelcheeks.R
+import com.example.steelcheeks.SteelCheeksApplication
 
 class SettingsFragment : PreferenceFragmentCompat() {
+
+    private val viewModel: SettingsViewModel by viewModels {
+        SettingsViewModelFactory(
+            (activity?.application as SteelCheeksApplication).database
+        )
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
         val themePreference: ListPreference? = findPreference("theme")
         themePreference?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener{ _, newValue ->
             applyTheme(newValue.toString())
+            true
+        }
+
+        val exportPreference: Preference? = findPreference("backup_database")
+        exportPreference?.onPreferenceClickListener = Preference.OnPreferenceClickListener { _ ->
+            viewModel.getDatabaseAsJsonString()
             true
         }
     }
@@ -42,4 +59,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     }
 
+    private fun displayJsonString (jsonString: String) {
+        Log.d("SettingsFragment", jsonString)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.jsonString.observe(viewLifecycleOwner) { jsonString ->
+            displayJsonString(jsonString)
+        }
+    }
 }

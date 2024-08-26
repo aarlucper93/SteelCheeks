@@ -11,8 +11,10 @@ import com.example.steelcheeks.data.network.FoodSearchApi
 import com.example.steelcheeks.data.network.SingleFoodApi
 import com.example.steelcheeks.data.network.SingleProductOffResponse
 import com.example.steelcheeks.domain.Food
+import com.example.steelcheeks.utils.JsonUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import org.threeten.bp.LocalDate
@@ -138,5 +140,11 @@ class FoodRepository(private val database: FoodRoomDatabase) {
             fat = food.fat,
         )
     }
+
+    suspend fun convertFoodEntitiesToJson() : String =
+        withContext(Dispatchers.IO) {
+            val foods = getLocalFoodList().first()
+            JsonUtils.convertFoodEntitiesToJson(foods)
+        }
 
 }
