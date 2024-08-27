@@ -1,7 +1,7 @@
 SteelCheeks is a simple nutritional tracker for Android devices, built with Kotlin.
 
 - It allows the user to track the contents of their diet by registering the foods consumed in a diary that will automatically calculate the total values for energy and macronutrients.
-- The user can create their own local database of foods by using the integrated search engine or scan the product's barcode. The information of the product will be retrieved from Open Food Facts.
+- The user can create their own local database of foods by using the integrated search engine or scanning the product's barcode. The information of the product will be retrieved from Open Food Facts.
 
 
 <p align="center">
