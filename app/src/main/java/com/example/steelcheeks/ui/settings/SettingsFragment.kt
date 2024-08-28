@@ -2,10 +2,12 @@ package com.example.steelcheeks.ui.settings
 
 import android.app.UiModeManager
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.viewModels
 import androidx.preference.ListPreference
@@ -13,6 +15,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.example.steelcheeks.R
 import com.example.steelcheeks.SteelCheeksApplication
+import java.io.IOException
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -20,6 +23,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
         SettingsViewModelFactory(
             (activity?.application as SteelCheeksApplication).database
         )
+    }
+
+    private val createFileLauncher = registerForActivityResult(
+        CreateDocument("application/json")
+    ) { uri ->
+        uri?.let {
+            viewModel.jsonString.value?.let {
+                writeToFile(uri, it)
+            }
+        }
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -33,8 +46,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val exportPreference: Preference? = findPreference("backup_database")
         exportPreference?.onPreferenceClickListener = Preference.OnPreferenceClickListener { _ ->
-            viewModel.getDatabaseAsJsonString()
+            viewModel.getDatabaseAsJsonString()     //Obtain JSON string
+            createFile()                            //Launch intent to create file
             true
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.jsonString.observe(viewLifecycleOwner) { jsonString ->
+            displayJsonString(jsonString)
         }
     }
 
@@ -55,19 +77,25 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 "Dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
         }
-
-
     }
 
     private fun displayJsonString (jsonString: String) {
         Log.d("SettingsFragment", jsonString)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun createFile() {
+        createFileLauncher.launch("database_backup.json")
+    }
 
-        viewModel.jsonString.observe(viewLifecycleOwner) { jsonString ->
-            displayJsonString(jsonString)
+    private fun writeToFile(uri: Uri, jsonString: String) {
+        try {
+            context?.contentResolver?.openOutputStream(uri)?.use {   //Ensures the resource is closed even if an exception is thrown
+                it.write(jsonString.toByteArray())
+                it.close()
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Log.e("SettingsFragment", "Error writing file", e)
         }
     }
 }
