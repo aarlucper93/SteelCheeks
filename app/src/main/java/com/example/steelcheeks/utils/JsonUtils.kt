@@ -10,12 +10,18 @@ import kotlinx.coroutines.withContext
 
 object JsonUtils {
 
+    val moshi: Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+    val jsonAdapter : JsonAdapter<List<FoodEntity>> =
+        moshi.adapter(Types.newParameterizedType(List::class.java, FoodEntity::class.java))
+
     suspend fun convertFoodEntitiesToJson(foods: List<FoodEntity>) : String =
         withContext(Dispatchers.Default) {
-            val moshi: Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-            val jsonAdapter : JsonAdapter<List<FoodEntity>> =
-                moshi.adapter(Types.newParameterizedType(List::class.java, FoodEntity::class.java))
             jsonAdapter.toJson(foods)
+        }
+
+    suspend fun convertJsonToFoodEntities(jsonString: String) : List<FoodEntity>? =
+        withContext(Dispatchers.Default) {
+            jsonAdapter.fromJson(jsonString)
         }
 
 }

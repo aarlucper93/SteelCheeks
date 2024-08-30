@@ -53,6 +53,20 @@ class FoodRepository(private val database: FoodRoomDatabase) {
         return resultList
     }
 
+    suspend fun insertFoodListFromJson(jsonString: String): List<Long> {
+
+        var foodList : List<FoodEntity>?
+        withContext(Dispatchers.Main) {
+            foodList = JsonUtils.convertJsonToFoodEntities(jsonString)
+        }
+        withContext(Dispatchers.IO) {
+            foodList?.let {
+                resultList = database.foodDao().insertAll(it)
+            }
+        }
+        return resultList
+    }
+
     suspend fun getFoodList(searchTerms: String): Response<OpenFoodFactsResponse>? {
         return withContext(Dispatchers.IO) {
             try {

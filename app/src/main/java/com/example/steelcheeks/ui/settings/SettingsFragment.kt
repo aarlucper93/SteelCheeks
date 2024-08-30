@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.viewModels
@@ -15,6 +16,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.example.steelcheeks.R
 import com.example.steelcheeks.SteelCheeksApplication
+import com.google.android.material.snackbar.Snackbar
 import java.io.IOException
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -35,6 +37,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
+    private val pickFileLauncher = registerForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        uri?.let {
+            val jsonString = readFileContents(uri)
+            jsonString?.let {
+                viewModel.populateDatabaseFromJson(jsonString)
+            }
+        }
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
@@ -50,6 +63,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
             createFile()                            //Launch intent to create file
             true
         }
+
+        val importPreference: Preference? = findPreference("import_database")
+        importPreference?.onPreferenceClickListener = Preference.OnPreferenceClickListener { _ ->
+            importFromFile()
+            true
+        }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,6 +77,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         viewModel.jsonString.observe(viewLifecycleOwner) { jsonString ->
             displayJsonString(jsonString)
+        }
+
+        viewModel.snackbarMessage.observe(viewLifecycleOwner) {message ->
+            showSnackbar(message)
+
         }
     }
 
@@ -96,6 +121,30 @@ class SettingsFragment : PreferenceFragmentCompat() {
         } catch (e: IOException) {
             e.printStackTrace()
             Log.e("SettingsFragment", "Error writing file", e)
+            showSnackbar("Failed to create file")
+        }
+    }
+
+    //Get the contents of the file
+    private fun readFileContents(uri: Uri): String? {
+        return try {
+            context?.contentResolver?.openInputStream(uri)?.use { inputStream ->
+                inputStream.bufferedReader().use { it.readText() }
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Log.e("SettingsFragment", "Error reading file", e)
+            null
+        }
+    }
+
+    private fun importFromFile() {
+        pickFileLauncher.launch(arrayOf("application/json"))
+    }
+
+    private fun showSnackbar(message: String) {
+        view?.let {
+            Snackbar.make(it, message, Snackbar.LENGTH_LONG).show()
         }
     }
 }
